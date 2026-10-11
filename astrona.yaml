@@ -1,8 +1,9 @@
-# Preparation scaffold. Technical pages stay draft until authoring and review.
+# Reading-only content; YAML knowledge checks have a separate index.
 training:
   id: ATS057
   title: 'CCA: Cluster Mesh'
-  description: Preparation scaffold for Cluster Mesh. Lessons and environments are planned.
+  description: 'Detailed reading material and reusable YAML knowledge checks for CCA: Cluster Mesh. Technical
+    content remains draft. No labs or playgrounds.'
   certification:
     name: Cilium Certified Associate
     code: CCA
@@ -15,7 +16,7 @@ training:
 modules:
 - id: module-intro
   title: Introduction
-  description: Planned introduction and authoring status.
+  description: Audience, reading method and review process.
   content:
   - type: reading
     title: Introduction
@@ -31,21 +32,37 @@ modules:
     path: sections/intro/course-03-how-this-course-is-made.md
 - id: module-010
   title: Understand the Benefits of Cluster Mesh for Multi-cluster Connectivity
-  description: Planned coverage of this curriculum objective.
+  description: Developed reading and reasoning for Understand the Benefits of Cluster Mesh for Multi-cluster
+    Connectivity.
+  draft: true
   content:
-  - type: reading
-    title: Section Overview
-    path: sections/section-010/README.md
   - type: reading
     title: Understand the Benefits of Cluster Mesh for Multi-cluster Connectivity
+    path: sections/section-010/README.md
+  - type: reading
+    title: Cluster Mesh Connectivity And Trust Prerequisites
     path: sections/section-010/module-01/course.md
+  - type: reading
+    title: Cluster Mesh Connectivity And Trust Prerequisites
+    path: sections/section-010/module-01/course-01-cluster-mesh-connectivity-and-trust-prerequisites.md
+  - type: reading
+    title: Summary
+    path: sections/section-010/module-01/course-02-summary.md
 - id: module-020
   title: Achieve Service Discovery and Load Balancing Across Clusters with Cluster Mesh
-  description: Planned coverage of this curriculum objective.
+  description: Developed reading and reasoning for Achieve Service Discovery and Load Balancing Across
+    Clusters with Cluster Mesh.
+  draft: true
   content:
   - type: reading
-    title: Section Overview
+    title: Achieve Service Discovery and Load Balancing Across Clusters with Cluster Mesh
     path: sections/section-020/README.md
   - type: reading
-    title: Achieve Service Discovery and Load Balancing Across Clusters with Cluster Mesh
+    title: Global Service Backends And Cross-Cluster Discovery
     path: sections/section-020/module-01/course.md
+  - type: reading
+    title: Global Service Backends And Cross-Cluster Discovery
+    path: sections/section-020/module-01/course-01-global-service-backends-and-cross-cluster-discovery.md
+  - type: reading
+    title: Summary
+    path: sections/section-020/module-01/course-02-summary.md

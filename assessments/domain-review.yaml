@@ -1,0 +1,129 @@
+schema_version: 1
+kind: question_bank
+id: ats057-domain-review
+course_id: ATS057
+exam_code: CCA
+status: draft
+provenance: Original practice material; not official examination questions.
+scope:
+  type: domain
+  id: domain-review
+  title: Cluster Mesh
+placement:
+  position: after
+  reading: sections/section-020/module-01/course-02-summary.md
+questions:
+- id: ats057-domain-review-q01
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain cross-cluster workload connectivity and independent control planes.
+  source_readings:
+  - sections/section-010/module-01/course-01-cluster-mesh-connectivity-and-trust-prerequisites.md
+  prompt: Does Cluster Mesh merge all Kubernetes control planes into one?
+  options:
+  - id: a
+    text: Yes; every API object has one universal owner automatically.
+    explanation: Object ownership remains cluster-specific.
+  - id: b
+    text: Yes; all databases are replicated automatically.
+    explanation: Application data replication is separate.
+  - id: c
+    text: No; clusters retain independent control-plane responsibility.
+    explanation: The mesh connects supported networking and state.
+  correct_option: c
+  explanation: The mesh connects supported networking and state.
+- id: ats057-domain-review-q02
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Identify unique cluster identity and compatible addressing requirements.
+  source_readings:
+  - sections/section-010/module-01/course-01-cluster-mesh-connectivity-and-trust-prerequisites.md
+  prompt: Why require coherent cluster identity and addressing?
+  options:
+  - id: a
+    text: It removes the need for policy.
+    explanation: Reachability still needs authorization.
+  - id: b
+    text: Cross-cluster endpoints must be distinguished and reachable.
+    explanation: Collisions undermine attribution or routing.
+  - id: c
+    text: It changes every application password.
+    explanation: Those are unrelated controls.
+  correct_option: b
+  explanation: Collisions undermine attribution or routing.
+- id: ats057-domain-review-q03
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Separate mesh state exchange from the data path.
+  source_readings:
+  - sections/section-010/module-01/course-01-cluster-mesh-connectivity-and-trust-prerequisites.md
+  prompt: Does a healthy state-exchange connection prove workload traffic works?
+  options:
+  - id: a
+    text: No; the data path has separate routes and filtering.
+    explanation: Control and data connectivity differ.
+  - id: b
+    text: Yes; control state contains every packet.
+    explanation: State exchange is not packet forwarding.
+  - id: c
+    text: Yes; applications need no listener.
+    explanation: Useful service still requires the destination.
+  correct_option: a
+  explanation: Control and data connectivity differ.
+- id: ats057-domain-review-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain Cilium global Service intent and shared backend relationships.
+  source_readings:
+  - sections/section-020/module-01/course-01-global-service-backends-and-cross-cluster-discovery.md
+  prompt: What does a global Service relationship principally enable?
+  options:
+  - id: a
+    text: Replication of every application record automatically.
+    explanation: Business data remains separate.
+  - id: b
+    text: Deletion of local Services.
+    explanation: Clusters retain local resource ownership.
+  - id: c
+    text: Supported discovery or selection of backends across clusters.
+    explanation: It extends the service backend population.
+  correct_option: c
+  explanation: It extends the service backend population.
+- id: ats057-domain-review-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Distinguish service export or import from ordinary local discovery.
+  source_readings:
+  - sections/section-020/module-01/course-01-global-service-backends-and-cross-cluster-discovery.md
+  prompt: Why must Service names and namespaces be reviewed?
+  options:
+  - id: a
+    text: Every namespace is globally the same tenant by definition.
+    explanation: Trust must be stated explicitly.
+  - id: b
+    text: They identify intended relationships in the sharing model.
+    explanation: Similar names can otherwise connect unintended populations.
+  - id: c
+    text: Names alone encrypt all backend traffic.
+    explanation: Encryption is a separate feature.
+  correct_option: b
+  explanation: Similar names can otherwise connect unintended populations.
+- id: ats057-domain-review-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Separate backend discovery from routing and application data consistency.
+  source_readings:
+  - sections/section-020/module-01/course-01-global-service-backends-and-cross-cluster-discovery.md
+  prompt: Does a discovered remote backend guarantee useful service?
+  options:
+  - id: a
+    text: No; routing, policy, readiness and application dependencies remain.
+    explanation: Discovery supplies a candidate relationship.
+  - id: b
+    text: Yes; discovery creates database consistency.
+    explanation: Networking does not implement data replication.
+  - id: c
+    text: Yes; every remote application needs no credentials.
+    explanation: Application authorization still applies.
+  correct_option: a
+  explanation: Discovery supplies a candidate relationship.

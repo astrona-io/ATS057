@@ -1,0 +1,61 @@
+version: 1
+approval: CCA requested 2026-10-11; established reading-only scope
+course:
+  id: ATS057
+  certification:
+    name: Cilium Certified Associate
+    code: CCA
+    provider: CNCF / Linux Foundation
+    domain: Cluster Mesh
+    weight: 10
+    competencies:
+    - Understand the Benefits of Cluster Mesh for Multi-cluster Connectivity
+    - Achieve Service Discovery and Load Balancing Across Clusters with Cluster Mesh
+defaults:
+  playground: false
+  module_lab: false
+  capstone: false
+  section_quiz: false
+  final_quiz: true
+assessment_format: YAML question banks v1, registered in assessments/index.yaml
+sections:
+- id: section-010
+  title: Understand the Benefits of Cluster Mesh for Multi-cluster Connectivity
+  curriculum_item: Understand the Benefits of Cluster Mesh for Multi-cluster Connectivity
+  capstone: false
+  section_quiz: false
+  modules:
+  - id: module-01
+    title: Cluster Mesh Connectivity And Trust Prerequisites
+    objectives:
+    - Explain cross-cluster workload connectivity and independent control planes.
+    - Identify unique cluster identity and compatible addressing requirements.
+    - Separate mesh state exchange from the data path.
+    - Evaluate policy, trust and failure-domain consequences.
+    outline:
+    - Cluster Mesh Connectivity And Trust Prerequisites
+    playground: false
+    module_lab: false
+    sources:
+    - reading: sections/section-010/module-01/course-01-cluster-mesh-connectivity-and-trust-prerequisites.md
+      adapted_from: null
+- id: section-020
+  title: Achieve Service Discovery and Load Balancing Across Clusters with Cluster Mesh
+  curriculum_item: Achieve Service Discovery and Load Balancing Across Clusters with Cluster Mesh
+  capstone: false
+  section_quiz: false
+  modules:
+  - id: module-01
+    title: Global Service Backends And Cross-Cluster Discovery
+    objectives:
+    - Explain Cilium global Service intent and shared backend relationships.
+    - Distinguish service export or import from ordinary local discovery.
+    - Evaluate namespace, name, affinity and readiness assumptions.
+    - Separate backend discovery from routing and application data consistency.
+    outline:
+    - Global Service Backends And Cross-Cluster Discovery
+    playground: false
+    module_lab: false
+    sources:
+    - reading: sections/section-020/module-01/course-01-global-service-backends-and-cross-cluster-discovery.md
+      adapted_from: null

@@ -1,18 +1,16 @@
-# ATS057 — CCA: Cluster Mesh
+# Cluster Mesh (ATS057)
 
-Preparation for the **Cluster Mesh** domain of **Cilium Certified Associate (CCA)**.
-The published domain weight is **10%**. This repository belongs to
-the [ATP011 training path](https://github.com/astrona-io/ATP011).
+Cilium Certified Associate (CCA): Cluster Mesh, worth 10% of the official curriculum. This course belongs to ATP011.
 
-**Status:** Preparation scaffold; content authoring has not started.
+Developed reading explains mechanisms, responsible components, examples and limits. Every section has an introduction and every module closes with a summary. Reusable YAML checks contain 5–15 questions per bank. Technical content remains draft. No labs or playgrounds are included.
 
-The initial commit reserves the curriculum structure. Lessons, playgrounds,
-labs and assessments are planned and are not ready for learner use.
+## Course Outline
 
-See [CURRICULUM.md](CURRICULUM.md) for the objective map and authoring checklist,
-[astrona.yaml](astrona.yaml) for the course manifest, and
-[CLAUDE.md](CLAUDE.md) for writing and environment rules.
+| Section / module | Module | Teaching files |
+| --- | --- | --- |
+| 010 / 01 | Cluster Mesh Connectivity And Trust Prerequisites | Cluster Mesh Connectivity And Trust Prerequisites |
+| 020 / 01 | Global Service Backends And Cross-Cluster Discovery | Global Service Backends And Cross-Cluster Discovery |
 
-Curriculum source: [official CCA page](https://training.linuxfoundation.org/certification/cilium-certified-associate-cca/), checked 2026-10-10.
-License: [Apache-2.0](LICENSE). Curriculum objectives retain attribution to
-The Linux Foundation and CNCF; see [CNCF curriculum licensing](https://github.com/cncf/curriculum).
+## Author Review
+
+See [curriculum coverage](CURRICULUM.md), [primary sources](SOURCES.md), [question-bank documentation](ASSESSMENTS.md) and [contribution instructions](CONTRIBUTING.md). No runtime execution is claimed.
