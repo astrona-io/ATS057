@@ -1,9 +1,8 @@
-# Reading-only content; YAML knowledge checks have a separate index.
 training:
   id: ATS057
   title: 'CCA: Cluster Mesh'
-  description: 'Detailed reading material and reusable YAML knowledge checks for CCA: Cluster Mesh. Technical
-    content remains draft. No labs or playgrounds.'
+  description: 'Detailed reading material and reusable YAML knowledge checks for CCA:
+    Cluster Mesh. Technical content remains draft. Private playgrounds and draft independent labs are included.'
   certification:
     name: Cilium Certified Associate
     code: CCA
@@ -32,9 +31,9 @@ modules:
     path: sections/intro/course-03-how-this-course-is-made.md
 - id: module-010
   title: Understand the Benefits of Cluster Mesh for Multi-cluster Connectivity
-  description: Developed reading and reasoning for Understand the Benefits of Cluster Mesh for Multi-cluster
-    Connectivity.
-  draft: true
+  description: Developed reading and reasoning for Understand the Benefits of Cluster
+    Mesh for Multi-cluster Connectivity.
+  status: alpha
   content:
   - type: reading
     title: Understand the Benefits of Cluster Mesh for Multi-cluster Connectivity
@@ -46,16 +45,39 @@ modules:
     title: Cluster Mesh Connectivity And Trust Prerequisites
     path: sections/section-010/module-01/course-01-cluster-mesh-connectivity-and-trust-prerequisites.md
   - type: reading
+    title: Inventory Cluster Mesh Prerequisites — Task
+    path: sections/section-010/module-01/labs/lab-01/question.md
+  - type: lab
+    title: Inventory Cluster Mesh Prerequisites
+    path: sections/section-010/module-01/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 25m
+    topic: cilium-diagnostics
+    task_kind: build
+    learning_goals:
+    - Record the local baseline that a mesh configuration would depend on.
+    tags:
+    - cca
+    - cilium-diagnostics
+  - type: reading
+    title: Inventory Cluster Mesh Prerequisites — Solution
+    path: sections/section-010/module-01/labs/lab-01/solution.md
+  - type: reading
+    title: 'Guided Practice: Inventory Cluster Mesh Prerequisites'
+    path: sections/section-010/module-01/course-02-guided-practice.md
+  - type: reading
     title: Summary
-    path: sections/section-010/module-01/course-02-summary.md
+    path: sections/section-010/module-01/course-03-summary.md
 - id: module-020
-  title: Achieve Service Discovery and Load Balancing Across Clusters with Cluster Mesh
-  description: Developed reading and reasoning for Achieve Service Discovery and Load Balancing Across
-    Clusters with Cluster Mesh.
-  draft: true
+  title: Achieve Service Discovery and Load Balancing Across Clusters with Cluster
+    Mesh
+  description: Developed reading and reasoning for Achieve Service Discovery and Load
+    Balancing Across Clusters with Cluster Mesh.
+  status: alpha
   content:
   - type: reading
-    title: Achieve Service Discovery and Load Balancing Across Clusters with Cluster Mesh
+    title: Achieve Service Discovery and Load Balancing Across Clusters with Cluster
+      Mesh
     path: sections/section-020/README.md
   - type: reading
     title: Global Service Backends And Cross-Cluster Discovery
@@ -64,5 +86,26 @@ modules:
     title: Global Service Backends And Cross-Cluster Discovery
     path: sections/section-020/module-01/course-01-global-service-backends-and-cross-cluster-discovery.md
   - type: reading
+    title: Inspect A Service Before Global Discovery — Task
+    path: sections/section-020/module-01/labs/lab-01/question.md
+  - type: lab
+    title: Inspect A Service Before Global Discovery
+    path: sections/section-020/module-01/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 25m
+    topic: cilium-diagnostics
+    task_kind: build
+    learning_goals:
+    - Record the local baseline that a mesh configuration would depend on.
+    tags:
+    - cca
+    - cilium-diagnostics
+  - type: reading
+    title: Inspect A Service Before Global Discovery — Solution
+    path: sections/section-020/module-01/labs/lab-01/solution.md
+  - type: reading
+    title: 'Guided Practice: Inspect A Service Before Global Discovery'
+    path: sections/section-020/module-01/course-02-guided-practice.md
+  - type: reading
     title: Summary
-    path: sections/section-020/module-01/course-02-summary.md
+    path: sections/section-020/module-01/course-03-summary.md
