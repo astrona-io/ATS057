@@ -33,7 +33,7 @@ modules:
   title: Understand the Benefits of Cluster Mesh for Multi-cluster Connectivity
   description: Developed reading and reasoning for Understand the Benefits of Cluster
     Mesh for Multi-cluster Connectivity.
-  status: alpha
+  maturity: alpha
   content:
   - type: reading
     title: Understand the Benefits of Cluster Mesh for Multi-cluster Connectivity
@@ -73,7 +73,7 @@ modules:
     Mesh
   description: Developed reading and reasoning for Achieve Service Discovery and Load
     Balancing Across Clusters with Cluster Mesh.
-  status: alpha
+  maturity: alpha
   content:
   - type: reading
     title: Achieve Service Discovery and Load Balancing Across Clusters with Cluster
