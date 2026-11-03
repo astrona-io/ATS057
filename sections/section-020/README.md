@@ -7,7 +7,7 @@ exam_objectives:
 
 A connected mesh lets pods reach each other. This section adds names: one Service name that has backends in several clusters. It covers global services with annotations, service affinity, the behavior of a mesh when a cluster is unreachable, and the standard Multi-Cluster Services API. Every step runs on two connected kind clusters, `west` and `east`.
 
-The section has three modules. The first declares global services and controls which clusters share their backends. The second sets affinity and explains failure handling. The third exports services with `ServiceExport` and synchronizes EndpointSlices. Each module has a playground and a graded lab. A capstone lab repairs and tunes three Services, and a quiz closes the section.
+The section has four modules. The first declares global services and controls which clusters share their backends. The second sets affinity and explains failure handling. The third exports services with `ServiceExport` and synchronizes EndpointSlices. The fourth troubleshoots global services: it gives a checklist, reads the service state of an agent, tests load balancing and plans capacity. Each module has a playground and a graded lab. A capstone lab repairs and tunes three Services, and a quiz closes the section.
 
 ## Learning Outcomes
 

@@ -7,7 +7,7 @@ exam_objectives:
 
 A Kubernetes Service selects pods in its own cluster only. In a mesh, one Service name can have backends in several clusters. Cilium calls such a Service a global service. This module explains how a global service is declared, how Cilium merges the backends of the clusters, and how one cluster can use remote backends without offering its own.
 
-The module has two parts. The first explains the annotations and the merge mechanism. The second runs the annotations on two clusters and compares what each cluster sees. A graded lab asks you to make two Services global with different sharing rules.
+The module has four parts. The first explains the annotations and the merge mechanism. The second runs the annotations on two clusters and compares what each cluster sees. The third follows one request to a remote backend. The fourth explains how network policy applies to a global service. A graded lab asks you to make two Services global with different sharing rules.
 
 ## Learning objectives
 
@@ -18,6 +18,8 @@ After this module you can:
 - Use `service.cilium.io/shared: "false"` to use remote backends without sharing local ones.
 - Predict which clusters the clients of each cluster reach for a given set of annotations.
 - Read the backends that an agent holds for a global service.
+- Follow a request from a client to a backend in another cluster and name the component that chooses the backend.
+- Explain how a network policy applies to traffic that reaches a global service.
 
 ## Before you start
 

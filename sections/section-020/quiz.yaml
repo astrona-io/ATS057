@@ -203,3 +203,98 @@ questions:
     correct_option: b
     explanation: "The oldest export wins, so make the definitions match."
 
+  - id: ats057-020-q09
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Use the checklist for a service that does not balance"
+    source_readings:
+      - sections/section-020/module-04/course-01-a-checklist-for-a-service-that-does-not-balance.md
+    prompt: |-
+      All replies to `probe` in `west` come from `west`. The Service has the annotation `service.cilium.io/global: "true"` in `west` and no annotation in `east`. What is the cause?
+    options:
+      - id: a
+        text: "The mesh is disabled."
+        explanation: "The mesh can be healthy while one Service lacks the annotation."
+      - id: b
+        text: "The pods in `east` are not Ready."
+        explanation: "The facts given point to the annotation."
+      - id: c
+        text: "The Service in `east` is not global, so `east` does not share its backends."
+        explanation: "Correct. Each cluster needs the annotation to share its backends."
+      - id: d
+        text: "Cilium does not support global services."
+        explanation: "It does, with the annotation."
+    correct_option: c
+    explanation: "Annotate the Service in every cluster."
+
+  - id: ats057-020-q10
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Read the service table of an agent"
+    source_readings:
+      - sections/section-020/module-04/course-02-read-the-service-state-of-an-agent.md
+    prompt: |-
+      Which command shows the backends that an agent holds for each Service address?
+    options:
+      - id: a
+        text: "`cilium-dbg service list`"
+        explanation: "Correct. It lists each frontend with its backends, including those of remote clusters."
+      - id: b
+        text: "`kubectl get nodes`"
+        explanation: "It lists nodes, not backends."
+      - id: c
+        text: "`cilium clustermesh disconnect`"
+        explanation: "It removes a connection."
+      - id: d
+        text: "`kubectl get serviceexport`"
+        explanation: "It lists exports of the MCS-API, not agent state."
+    correct_option: a
+    explanation: "Use `cilium-dbg service list` and match the cluster IP of the Service."
+
+  - id: ats057-020-q11
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Test load balancing with evidence"
+    source_readings:
+      - sections/section-020/module-04/course-03-test-load-balancing-without-guessing.md
+    prompt: |-
+      A client sends 100 requests on one open HTTP keep-alive connection and all replies come from one cluster. What explains this?
+    options:
+      - id: a
+        text: "Cluster Mesh is broken."
+        explanation: "The result does not show that."
+      - id: b
+        text: "The Service has too many ports."
+        explanation: "Port count does not cause this."
+      - id: c
+        text: "Cilium never balances across clusters."
+        explanation: "It does for new connections."
+      - id: d
+        text: "Cilium balances each new connection, and one persistent connection stays on one backend."
+        explanation: "Correct. Use a new connection for each request in the test."
+    correct_option: d
+    explanation: "Open a new connection for each request when you test the split."
+
+  - id: ats057-020-q12
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Plan capacity for the loss of a cluster"
+    source_readings:
+      - sections/section-020/module-04/course-04-capacity-and-failure-domains.md
+    prompt: |-
+      Two clusters each run at full capacity while sharing the load of a global service. What happens when one cluster fails?
+    options:
+      - id: a
+        text: "The other cluster handles the load without change."
+        explanation: "It receives twice its normal load."
+      - id: b
+        text: "The other cluster receives the whole load and is overloaded."
+        explanation: "Correct. Each cluster needs capacity for the full load to survive the loss of the other."
+      - id: c
+        text: "The mesh adds pods automatically."
+        explanation: "Cluster Mesh does not scale pods."
+      - id: d
+        text: "Requests stop and no backend is used."
+        explanation: "Requests go to the remaining backends."
+    correct_option: b
+    explanation: "Size each cluster for the full load."

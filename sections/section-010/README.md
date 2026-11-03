@@ -7,7 +7,7 @@ exam_objectives:
 
 Separate Kubernetes clusters do not share pods, Services or network policy. This section shows what Cilium Cluster Mesh connects, how to connect two clusters and how to restrict the traffic that the connection allows. Every step runs on two kind clusters, `west` and `east`, that both run Cilium.
 
-The section has three modules. The first explains the architecture of a mesh and its prerequisites. The second enables Cluster Mesh and connects the clusters. The third explains cluster identity in policy and writes cluster-aware network policies. Each module has a playground and a graded lab. A capstone lab combines the three modules, and a quiz closes the section.
+The section has four modules. The first explains the architecture of a mesh and its prerequisites. The second enables Cluster Mesh and connects the clusters. The third explains cluster identity in policy and writes cluster-aware network policies. The fourth operates a running mesh: it reads the status, explains the components, troubleshoots a broken connection and removes a connection. Each module has a playground and a graded lab. A capstone lab combines the first three modules, and a quiz closes the section.
 
 ## Learning Outcomes
 

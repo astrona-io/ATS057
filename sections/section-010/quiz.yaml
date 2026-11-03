@@ -203,3 +203,98 @@ questions:
     correct_option: b
     explanation: "Apply the policy in the cluster of the protected pod and name the source cluster."
 
+  - id: ats057-010-q09
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Say what a healthy mesh status proves"
+    source_readings:
+      - sections/section-010/module-04/course-01-read-the-status-of-a-mesh.md
+    prompt: |-
+      `cilium clustermesh status` shows connected agents and non-zero counts for the remote cluster, yet a pod of `west` cannot reach a pod of `east`. What does the status prove?
+    options:
+      - id: a
+        text: "That the data path works."
+        explanation: "The status does not send a request between pods."
+      - id: b
+        text: "That the policy is correct."
+        explanation: "The status does not read network policy."
+      - id: c
+        text: "That the control path works: the agents received state from the remote cluster."
+        explanation: "Correct. The data path still needs its own test, for example the tunnel port."
+      - id: d
+        text: "Nothing, because the status is always healthy."
+        explanation: "The status reports real counts and can show faults."
+    correct_option: c
+    explanation: "A healthy status proves the control path only. Test the data path with a request between pods."
+
+  - id: ats057-010-q10
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain KVStoreMesh"
+    source_readings:
+      - sections/section-010/module-04/course-02-the-clustermesh-apiserver-and-kvstoremesh.md
+    prompt: |-
+      What does KVStoreMesh change in a mesh of many clusters with many nodes?
+    options:
+      - id: a
+        text: "Only one component per cluster connects to each remote apiserver, and the agents read a local copy."
+        explanation: "Correct. The load on a remote apiserver depends on the number of clusters, not nodes."
+      - id: b
+        text: "Every agent connects to every remote cluster."
+        explanation: "That is the behaviour without KVStoreMesh."
+      - id: c
+        text: "It replaces the data path with a VPN."
+        explanation: "KVStoreMesh handles state, not traffic."
+      - id: d
+        text: "It copies Kubernetes Deployments between clusters."
+        explanation: "The mesh does not copy Kubernetes objects."
+    correct_option: a
+    explanation: "KVStoreMesh copies remote state into the local etcd so that agents read it locally."
+
+  - id: ats057-010-q11
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Troubleshoot a broken connection in order"
+    source_readings:
+      - sections/section-010/module-04/course-03-troubleshoot-a-broken-connection.md
+    prompt: |-
+      The status shows fewer connected agents for `east` than expected. Which check comes first?
+    options:
+      - id: a
+        text: "Restart every agent in `west`."
+        explanation: "A restart hides the cause and interrupts traffic."
+      - id: b
+        text: "Replace the certificate authority in both clusters."
+        explanation: "Check the simpler causes before changing certificates."
+      - id: c
+        text: "Rewrite all network policies."
+        explanation: "Policy does not affect the control connection."
+      - id: d
+        text: "Confirm that the `clustermesh-apiserver` of `east` runs and has a reachable address."
+        explanation: "Correct. Work from the outside in, starting with the remote apiserver."
+    correct_option: d
+    explanation: "Check the remote apiserver, its address, the secret, the certificates and the identity, in that order."
+
+  - id: ats057-010-q12
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Disconnect and disable in the right order"
+    source_readings:
+      - sections/section-010/module-04/course-04-disconnect-and-disable-a-mesh.md
+    prompt: |-
+      A team retires the cluster `east` for good. Which order is correct?
+    options:
+      - id: a
+        text: "Disable the mesh in `east`, then disconnect."
+        explanation: "Disabling first leaves the other clusters with a connection to nothing."
+      - id: b
+        text: "Disconnect every pair that includes `east`, then disable the mesh in `east`."
+        explanation: "Correct. Disconnect removes the connection; disable removes the apiserver."
+      - id: c
+        text: "Delete the secret `cilium-clustermesh` by hand in all clusters."
+        explanation: "The disconnect command removes the right entries."
+      - id: d
+        text: "Disable the mesh in `west` only."
+        explanation: "The retired cluster still has its apiserver and entries."
+    correct_option: b
+    explanation: "Disconnect first, then disable."

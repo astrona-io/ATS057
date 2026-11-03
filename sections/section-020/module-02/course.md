@@ -7,7 +7,7 @@ exam_objectives:
 
 A global service balances requests across all clusters. That is not always what a team wants. A request that stays in the local cluster is faster and cheaper, and a remote cluster may be the preferred home of a service. Cilium has an affinity setting for this choice. A mesh also has to behave sensibly when a remote cluster stops answering. This module explains both topics.
 
-The module has two parts. The first explains the affinity values, how the local fallback works and which limits apply. The second explains what happens to remote data when a cluster becomes unreachable and how to observe it. A graded lab asks you to set affinity on two Services.
+The module has four parts. The first explains the affinity values, how the local fallback works and which limits apply. The second explains what happens to remote data when a cluster becomes unreachable and how to observe it. The third drains a cluster for maintenance. The fourth explains how backend readiness and state decide which backends receive requests. A graded lab asks you to set affinity on two Services.
 
 ## Learning objectives
 
@@ -18,6 +18,8 @@ After this module you can:
 - Read which backends are preferred with `cilium-dbg service list --clustermesh-affinity`.
 - Describe what an agent does with the data of a remote cluster that stops answering, and the effect of `clustermesh.cacheTTL`.
 - State the limit for global NodePort Services and host-network clients.
+- Drain the backends of one cluster without dropping requests.
+- Explain how the readiness of a pod changes the backends that clients see.
 
 ## Before you start
 

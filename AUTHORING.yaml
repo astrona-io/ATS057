@@ -15,7 +15,7 @@ course:
 defaults:
   playground: true
   module_lab: false
-  capstone: false
+  capstone: true
   section_quiz: false
   final_quiz: true
 assessment_format: YAML question banks v1, registered in assessments/index.yaml
@@ -23,18 +23,21 @@ sections:
 - id: section-010
   title: Understand the Benefits of Cluster Mesh for Multi-cluster Connectivity
   curriculum_item: Understand the Benefits of Cluster Mesh for Multi-cluster Connectivity
-  capstone: false
-  section_quiz: false
+  capstone: true
+  section_quiz: true
   modules:
   - id: module-01
-    title: Cluster Mesh Connectivity And Trust Prerequisites
+    title: Cluster Mesh Architecture And Prerequisites
     objectives:
     - Explain cross-cluster workload connectivity and independent control planes.
-    - Identify unique cluster identity and compatible addressing requirements.
-    - Separate mesh state exchange from the data path.
+    - Identify unique cluster identity, compatible addressing, ports and routing mode.
+    - State the cluster ID limit and the size of a mesh.
     - Evaluate policy, trust and failure-domain consequences.
     outline:
     - Cluster Mesh Connectivity And Trust Prerequisites
+    - Guided Practice
+    - Network Ports And Routing Modes
+    - Cluster Id Limits And Mesh Size
     playground: true
     module_lab: true
     sources:
@@ -42,33 +45,131 @@ sections:
       adapted_from: null
     - reading: sections/section-010/module-01/course-02-guided-practice.md
       adapted_from: null
+    - reading: sections/section-010/module-01/course-03-network-ports-and-routing-modes.md
+      adapted_from: null
+    - reading: sections/section-010/module-01/course-04-cluster-id-limits-and-mesh-size.md
+      adapted_from: null
     labs:
     - id: lab-01
       path: sections/section-010/module-01/labs/lab-01
-      after_reading: sections/section-010/module-01/course-01-cluster-mesh-connectivity-and-trust-prerequisites.md
-      objective: Record the local baseline that a mesh configuration would depend
-        on.
+      after_reading: sections/section-010/module-01/course-02-guided-practice.md
+      objective: Fix A Cluster Identity Conflict.
       status: draft
       runtime_verification: pending
     practice_readings:
     - sections/section-010/module-01/course-02-guided-practice.md
+  - id: module-02
+    title: Enable And Connect Cluster Mesh
+    objectives:
+    - Enable Cluster Mesh and expose the clustermesh-apiserver.
+    - Connect two clusters and read the connection secret.
+    - Name the Helm values and certificates of a mesh.
+    - Prove the data path.
+    outline:
+    - Enable Cluster Mesh In A Cluster
+    - Connect Clusters And Verify
+    - Helm Values And Certificates
+    - Connection Modes And The Connection Secret
+    playground: true
+    module_lab: true
+    sources:
+    - reading: sections/section-010/module-02/course-01-enable-cluster-mesh-in-a-cluster.md
+      adapted_from: null
+    - reading: sections/section-010/module-02/course-02-connect-clusters-and-verify.md
+      adapted_from: null
+    - reading: sections/section-010/module-02/course-03-helm-values-and-certificates.md
+      adapted_from: null
+    - reading: sections/section-010/module-02/course-04-connection-modes-and-the-connection-secret.md
+      adapted_from: null
+    labs:
+    - id: lab-01
+      path: sections/section-010/module-02/labs/lab-01
+      after_reading: sections/section-010/module-02/course-02-connect-clusters-and-verify.md
+      objective: Enable And Connect Cluster Mesh.
+      status: draft
+      runtime_verification: pending
+    practice_readings:
+    - sections/section-010/module-02/course-02-connect-clusters-and-verify.md
+  - id: module-03
+    title: Cross-Cluster Connectivity And Network Policy
+    objectives:
+    - Explain identity and the cluster label.
+    - Write cluster-aware, deny and clusterwide policies.
+    - Find the reason for a dropped packet.
+    outline:
+    - Identity And The Cluster Label
+    - Writing Cluster Aware Policies
+    - Deny Rules And Clusterwide Policy
+    - See Why A Packet Is Dropped
+    playground: true
+    module_lab: true
+    sources:
+    - reading: sections/section-010/module-03/course-01-identity-and-the-cluster-label.md
+      adapted_from: null
+    - reading: sections/section-010/module-03/course-02-writing-cluster-aware-policies.md
+      adapted_from: null
+    - reading: sections/section-010/module-03/course-03-deny-rules-and-clusterwide-policy.md
+      adapted_from: null
+    - reading: sections/section-010/module-03/course-04-see-why-a-packet-is-dropped.md
+      adapted_from: null
+    labs:
+    - id: lab-01
+      path: sections/section-010/module-03/labs/lab-01
+      after_reading: sections/section-010/module-03/course-02-writing-cluster-aware-policies.md
+      objective: Restrict Cross-Cluster Traffic With A Cilium Network Policy.
+      status: draft
+      runtime_verification: pending
+    practice_readings:
+    - sections/section-010/module-03/course-02-writing-cluster-aware-policies.md
+  - id: module-04
+    title: Operate And Troubleshoot Cluster Mesh
+    objectives:
+    - Read the status of a mesh at three levels.
+    - Name the components of the clustermesh-apiserver Pod and KVStoreMesh.
+    - Troubleshoot a broken connection in a fixed order.
+    - Disconnect and disable a mesh in the right order.
+    outline:
+    - Read The Status Of A Mesh
+    - The Clustermesh Apiserver And Kvstoremesh
+    - Troubleshoot A Broken Connection
+    - Disconnect And Disable A Mesh
+    playground: true
+    module_lab: true
+    sources:
+    - reading: sections/section-010/module-04/course-01-read-the-status-of-a-mesh.md
+      adapted_from: null
+    - reading: sections/section-010/module-04/course-02-the-clustermesh-apiserver-and-kvstoremesh.md
+      adapted_from: null
+    - reading: sections/section-010/module-04/course-03-troubleshoot-a-broken-connection.md
+      adapted_from: null
+    - reading: sections/section-010/module-04/course-04-disconnect-and-disable-a-mesh.md
+      adapted_from: null
+    labs:
+    - id: lab-01
+      path: sections/section-010/module-04/labs/lab-01
+      after_reading: sections/section-010/module-04/course-04-disconnect-and-disable-a-mesh.md
+      objective: Disconnect A Cluster From The Mesh.
+      status: draft
+      runtime_verification: pending
+    practice_readings:
+    - sections/section-010/module-04/course-04-disconnect-and-disable-a-mesh.md
 - id: section-020
-  title: Achieve Service Discovery and Load Balancing Across Clusters with Cluster
-    Mesh
-  curriculum_item: Achieve Service Discovery and Load Balancing Across Clusters with
-    Cluster Mesh
-  capstone: false
-  section_quiz: false
+  title: Achieve Service Discovery and Load Balancing Across Clusters with Cluster Mesh
+  curriculum_item: Achieve Service Discovery and Load Balancing Across Clusters with Cluster Mesh
+  capstone: true
+  section_quiz: true
   modules:
   - id: module-01
-    title: Global Service Backends And Cross-Cluster Discovery
+    title: Global Services And Cross-Cluster Discovery
     objectives:
-    - Explain Cilium global Service intent and shared backend relationships.
-    - Distinguish service export or import from ordinary local discovery.
-    - Evaluate namespace, name, affinity and readiness assumptions.
-    - Separate backend discovery from routing and application data consistency.
+    - Declare global services and control sharing.
+    - Follow a request to a remote backend.
+    - Explain network policy for a global service.
     outline:
-    - Global Service Backends And Cross-Cluster Discovery
+    - Global Service Backends And Cross Cluster Discovery
+    - Guided Practice
+    - Follow A Request To A Remote Backend
+    - Global Services And Network Policy
     playground: true
     module_lab: true
     sources:
@@ -76,13 +177,110 @@ sections:
       adapted_from: null
     - reading: sections/section-020/module-01/course-02-guided-practice.md
       adapted_from: null
+    - reading: sections/section-020/module-01/course-03-follow-a-request-to-a-remote-backend.md
+      adapted_from: null
+    - reading: sections/section-020/module-01/course-04-global-services-and-network-policy.md
+      adapted_from: null
     labs:
     - id: lab-01
       path: sections/section-020/module-01/labs/lab-01
-      after_reading: sections/section-020/module-01/course-01-global-service-backends-and-cross-cluster-discovery.md
-      objective: Record the local baseline that a mesh configuration would depend
-        on.
+      after_reading: sections/section-020/module-01/course-02-guided-practice.md
+      objective: Create A Global Service Across Two Clusters.
       status: draft
       runtime_verification: pending
     practice_readings:
     - sections/section-020/module-01/course-02-guided-practice.md
+  - id: module-02
+    title: Service Affinity And Failure Handling
+    objectives:
+    - Set service affinity and predict the fallback.
+    - Explain unreachable clusters and cacheTTL.
+    - Drain a cluster and read backend readiness.
+    outline:
+    - Service Affinity
+    - Unreachable Clusters And Limits
+    - Drain A Cluster For Maintenance
+    - Backend Readiness And State
+    playground: true
+    module_lab: true
+    sources:
+    - reading: sections/section-020/module-02/course-01-service-affinity.md
+      adapted_from: null
+    - reading: sections/section-020/module-02/course-02-unreachable-clusters-and-limits.md
+      adapted_from: null
+    - reading: sections/section-020/module-02/course-03-drain-a-cluster-for-maintenance.md
+      adapted_from: null
+    - reading: sections/section-020/module-02/course-04-backend-readiness-and-state.md
+      adapted_from: null
+    labs:
+    - id: lab-01
+      path: sections/section-020/module-02/labs/lab-01
+      after_reading: sections/section-020/module-02/course-02-unreachable-clusters-and-limits.md
+      objective: Prefer Local Or Remote Backends With Service Affinity.
+      status: draft
+      runtime_verification: pending
+    practice_readings:
+    - sections/section-020/module-02/course-02-unreachable-clusters-and-limits.md
+  - id: module-03
+    title: Multi-Cluster Services API And EndpointSlice Synchronization
+    objectives:
+    - Enable and use the MCS-API.
+    - Explain conflicts and EndpointSlice synchronization.
+    - Read MCS-API status and choose between it and global services.
+    outline:
+    - Serviceexport And Clusterset Dns
+    - Conflicts And Endpointslice Synchronization
+    - The Mcs Api Objects And Their Status
+    - Choose Between Global Services And The Mcs Api
+    playground: true
+    module_lab: true
+    sources:
+    - reading: sections/section-020/module-03/course-01-serviceexport-and-clusterset-dns.md
+      adapted_from: null
+    - reading: sections/section-020/module-03/course-02-conflicts-and-endpointslice-synchronization.md
+      adapted_from: null
+    - reading: sections/section-020/module-03/course-03-the-mcs-api-objects-and-their-status.md
+      adapted_from: null
+    - reading: sections/section-020/module-03/course-04-choose-between-global-services-and-the-mcs-api.md
+      adapted_from: null
+    labs:
+    - id: lab-01
+      path: sections/section-020/module-03/labs/lab-01
+      after_reading: sections/section-020/module-03/course-02-conflicts-and-endpointslice-synchronization.md
+      objective: Export A Service With The Multi-Cluster Services API.
+      status: draft
+      runtime_verification: pending
+    practice_readings:
+    - sections/section-020/module-03/course-02-conflicts-and-endpointslice-synchronization.md
+  - id: module-04
+    title: Troubleshoot Global Services
+    objectives:
+    - Check a global service in a fixed order.
+    - Read the service state of an agent.
+    - Test load balancing with predictions.
+    - Plan capacity for the loss of a cluster.
+    outline:
+    - A Checklist For A Service That Does Not Balance
+    - Read The Service State Of An Agent
+    - Test Load Balancing Without Guessing
+    - Capacity And Failure Domains
+    playground: true
+    module_lab: true
+    sources:
+    - reading: sections/section-020/module-04/course-01-a-checklist-for-a-service-that-does-not-balance.md
+      adapted_from: null
+    - reading: sections/section-020/module-04/course-02-read-the-service-state-of-an-agent.md
+      adapted_from: null
+    - reading: sections/section-020/module-04/course-03-test-load-balancing-without-guessing.md
+      adapted_from: null
+    - reading: sections/section-020/module-04/course-04-capacity-and-failure-domains.md
+      adapted_from: null
+    labs:
+    - id: lab-01
+      path: sections/section-020/module-04/labs/lab-01
+      after_reading: sections/section-020/module-04/course-01-a-checklist-for-a-service-that-does-not-balance.md
+      objective: Fix Timeouts For A Global Service.
+      status: draft
+      runtime_verification: pending
+    practice_readings:
+    - sections/section-020/module-04/course-01-a-checklist-for-a-service-that-does-not-balance.md

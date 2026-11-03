@@ -7,7 +7,7 @@ exam_objectives:
 
 A connected mesh lets any pod reach any other pod, in every cluster, until a policy says otherwise. That is a benefit and a risk. This module explains how Cilium identifies a pod from a remote cluster, how a policy names the cluster of a source pod and where a policy must be applied, because Cilium does not copy policies between clusters.
 
-The module has two parts. The first follows one request across the mesh and shows how identity and the cluster label decide the policy result. The second writes policies that allow only a named workload of a named cluster. A graded lab asks you to restrict access to the `probe` pods of one cluster.
+The module has four parts. The first follows one request across the mesh and shows how identity and the cluster label decide the policy result. The second writes policies that allow only a named workload of a named cluster. The third adds deny rules, egress rules and clusterwide policy. The fourth shows how to find out why a packet is dropped. A graded lab asks you to restrict access to the `probe` pods of one cluster.
 
 ## Learning objectives
 
@@ -18,6 +18,8 @@ After this module you can:
 - Say in which cluster a policy must be applied for ingress and for egress.
 - Write a `CiliumNetworkPolicy` that allows only a named workload of a named cluster.
 - Predict which pods of each cluster a policy allows, including pods with the same labels in the wrong cluster.
+- Write a deny rule and a `CiliumClusterwideNetworkPolicy` for a mesh.
+- Find the reason for a dropped packet with the tools of the agent.
 
 ## Before you start
 

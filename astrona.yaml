@@ -64,8 +64,14 @@ modules:
       - name: "Cilium Cluster Mesh setup"
         url: https://docs.cilium.io/en/stable/network/clustermesh/clustermesh/
   - type: reading
+    title: "Network Ports And Routing Modes Between Clusters"
+    path: sections/section-010/module-01/course-03-network-ports-and-routing-modes.md
+  - type: reading
+    title: "Cluster ID Limits And Mesh Size"
+    path: sections/section-010/module-01/course-04-cluster-id-limits-and-mesh-size.md
+  - type: reading
     title: "Summary"
-    path: sections/section-010/module-01/course-03-summary.md
+    path: sections/section-010/module-01/course-05-summary.md
   - type: reading
     title: "Enable And Connect Cluster Mesh"
     path: sections/section-010/module-02/course.md
@@ -93,8 +99,14 @@ modules:
       - name: "Cilium Cluster Mesh setup"
         url: https://docs.cilium.io/en/stable/network/clustermesh/clustermesh/
   - type: reading
+    title: "Helm Values And Certificates Of The Mesh"
+    path: sections/section-010/module-02/course-03-helm-values-and-certificates.md
+  - type: reading
+    title: "Connection Modes And The Connection Secret"
+    path: sections/section-010/module-02/course-04-connection-modes-and-the-connection-secret.md
+  - type: reading
     title: "Summary"
-    path: sections/section-010/module-02/course-03-summary.md
+    path: sections/section-010/module-02/course-05-summary.md
   - type: reading
     title: "Cross-Cluster Connectivity And Network Policy"
     path: sections/section-010/module-03/course.md
@@ -122,8 +134,49 @@ modules:
       - name: "Cluster Mesh network policy"
         url: https://docs.cilium.io/en/stable/network/clustermesh/policy/
   - type: reading
+    title: "Deny Rules, Egress Rules And Clusterwide Policy"
+    path: sections/section-010/module-03/course-03-deny-rules-and-clusterwide-policy.md
+  - type: reading
+    title: "See Why A Packet Is Dropped"
+    path: sections/section-010/module-03/course-04-see-why-a-packet-is-dropped.md
+  - type: reading
     title: "Summary"
-    path: sections/section-010/module-03/course-03-summary.md
+    path: sections/section-010/module-03/course-05-summary.md
+  - type: reading
+    title: "Operate And Troubleshoot Cluster Mesh"
+    path: sections/section-010/module-04/course.md
+  - type: reading
+    title: "Read The Status Of A Mesh"
+    path: sections/section-010/module-04/course-01-read-the-status-of-a-mesh.md
+  - type: reading
+    title: "The clustermesh-apiserver And KVStoreMesh"
+    path: sections/section-010/module-04/course-02-the-clustermesh-apiserver-and-kvstoremesh.md
+  - type: reading
+    title: "Troubleshoot A Broken Connection"
+    path: sections/section-010/module-04/course-03-troubleshoot-a-broken-connection.md
+  - type: reading
+    title: "Disconnect And Disable A Mesh"
+    path: sections/section-010/module-04/course-04-disconnect-and-disable-a-mesh.md
+  - type: reading
+    title: "Disconnect A Cluster From The Mesh - Task"
+    path: sections/section-010/module-04/labs/lab-01/question.md
+  - type: lab
+    title: "Disconnect A Cluster From The Mesh"
+    path: sections/section-010/module-04/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 30m
+    topic: cilium-clustermesh
+    task_kind: fix
+    tags: [cluster-mesh, disconnect, operations]
+    learning_goals:
+      - "Disconnect a cluster with cilium clustermesh disconnect"
+      - "Prove that the remote entry and the data path are gone"
+    resources:
+      - name: "Cilium Cluster Mesh setup"
+        url: https://docs.cilium.io/en/stable/network/clustermesh/clustermesh/
+  - type: reading
+    title: "Summary"
+    path: sections/section-010/module-04/course-05-summary.md
   - type: reading
     title: "Connect Two Clusters And Restrict Cross-Cluster Traffic - Task"
     path: sections/section-010/capstone/labs/lab-01/question.md
@@ -181,8 +234,14 @@ modules:
       - name: "Load balancing and global services"
         url: https://docs.cilium.io/en/stable/network/clustermesh/services/
   - type: reading
+    title: "Follow A Request To A Remote Backend"
+    path: sections/section-020/module-01/course-03-follow-a-request-to-a-remote-backend.md
+  - type: reading
+    title: "Global Services And Network Policy"
+    path: sections/section-020/module-01/course-04-global-services-and-network-policy.md
+  - type: reading
     title: "Summary"
-    path: sections/section-020/module-01/course-03-summary.md
+    path: sections/section-020/module-01/course-05-summary.md
   - type: reading
     title: "Service Affinity And Failure Handling"
     path: sections/section-020/module-02/course.md
@@ -210,8 +269,14 @@ modules:
       - name: "Service affinity"
         url: https://docs.cilium.io/en/stable/network/clustermesh/affinity/
   - type: reading
+    title: "Drain A Cluster For Maintenance"
+    path: sections/section-020/module-02/course-03-drain-a-cluster-for-maintenance.md
+  - type: reading
+    title: "Backend Readiness And State"
+    path: sections/section-020/module-02/course-04-backend-readiness-and-state.md
+  - type: reading
     title: "Summary"
-    path: sections/section-020/module-02/course-03-summary.md
+    path: sections/section-020/module-02/course-05-summary.md
   - type: reading
     title: "Multi-Cluster Services API And EndpointSlice Synchronization"
     path: sections/section-020/module-03/course.md
@@ -239,8 +304,49 @@ modules:
       - name: "Multi-Cluster Services API"
         url: https://docs.cilium.io/en/stable/network/clustermesh/mcsapi/
   - type: reading
+    title: "The MCS-API Objects And Their Status"
+    path: sections/section-020/module-03/course-03-the-mcs-api-objects-and-their-status.md
+  - type: reading
+    title: "Choose Between Global Services And The MCS-API"
+    path: sections/section-020/module-03/course-04-choose-between-global-services-and-the-mcs-api.md
+  - type: reading
     title: "Summary"
-    path: sections/section-020/module-03/course-03-summary.md
+    path: sections/section-020/module-03/course-05-summary.md
+  - type: reading
+    title: "Troubleshoot Global Services"
+    path: sections/section-020/module-04/course.md
+  - type: reading
+    title: "A Checklist For A Service That Does Not Balance"
+    path: sections/section-020/module-04/course-01-a-checklist-for-a-service-that-does-not-balance.md
+  - type: reading
+    title: "Fix Timeouts For A Global Service - Task"
+    path: sections/section-020/module-04/labs/lab-01/question.md
+  - type: lab
+    title: "Fix Timeouts For A Global Service"
+    path: sections/section-020/module-04/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 30m
+    topic: cilium-clustermesh
+    task_kind: fix
+    tags: [cluster-mesh, global-service, network-policy, troubleshooting]
+    learning_goals:
+      - "Find a network policy that drops traffic from a remote cluster"
+      - "Fix it without opening access to other workloads"
+    resources:
+      - name: "Load balancing and global services"
+        url: https://docs.cilium.io/en/stable/network/clustermesh/services/
+  - type: reading
+    title: "Read The Service State Of An Agent"
+    path: sections/section-020/module-04/course-02-read-the-service-state-of-an-agent.md
+  - type: reading
+    title: "Test Load Balancing Without Guessing"
+    path: sections/section-020/module-04/course-03-test-load-balancing-without-guessing.md
+  - type: reading
+    title: "Capacity And Failure Domains"
+    path: sections/section-020/module-04/course-04-capacity-and-failure-domains.md
+  - type: reading
+    title: "Summary"
+    path: sections/section-020/module-04/course-05-summary.md
   - type: reading
     title: "Repair And Tune Cross-Cluster Service Discovery - Task"
     path: sections/section-020/capstone/labs/lab-01/question.md

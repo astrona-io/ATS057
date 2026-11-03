@@ -7,7 +7,7 @@ exam_objectives:
 
 Global services use Cilium annotations. The Kubernetes community defines a standard for the same need, the Multi-Cluster Services API (MCS-API). It uses the resources `ServiceExport` and `ServiceImport` and a DNS domain named `clusterset.local`. Cilium implements it on top of Cluster Mesh. This module explains how the API works in Cilium and how Cilium can synchronize EndpointSlices for clients that read them directly.
 
-The module has two parts. The first explains the resources, the DNS names and the settings that turn the feature on. The second covers the conflict rules and the EndpointSlice synchronization. A graded lab asks you to export a Service from both clusters and request it by its `clusterset.local` name.
+The module has four parts. The first explains the resources, the DNS names and the settings that turn the feature on. The second covers the conflict rules and the EndpointSlice synchronization. The third reads the MCS-API objects and their status. The fourth compares global services with the MCS-API and says when to choose each. A graded lab asks you to export a Service from both clusters and request it by its `clusterset.local` name.
 
 ## Learning objectives
 
@@ -18,6 +18,8 @@ After this module you can:
 - Request a service by the name `<service>.<namespace>.svc.clusterset.local`.
 - Explain how Cilium resolves conflicts between exports of the same name.
 - Explain the purpose of the annotation `service.cilium.io/global-sync-endpoint-slices`.
+- Read the status conditions of a `ServiceExport` and a `ServiceImport`.
+- Choose between a global service and the MCS-API for a given case.
 
 ## Before you start
 

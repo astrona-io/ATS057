@@ -299,3 +299,74 @@ questions:
     correct_option: b
     explanation: "The `clustermesh-apiserver` carries state on the control path. The data path runs between nodes."
 
+  - id: ats057-final-q13
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Say what a healthy mesh status proves"
+    source_readings:
+      - sections/section-010/module-04/course-01-read-the-status-of-a-mesh.md
+    prompt: |-
+      What does a healthy `cilium clustermesh status` prove?
+    options:
+      - id: a
+        text: "That pods reach each other."
+        explanation: "It does not send requests between pods."
+      - id: b
+        text: "That the control path works and state arrived. A request between pods proves the data path."
+        explanation: "Correct."
+      - id: c
+        text: "That every policy is correct."
+        explanation: "The status does not read policy."
+      - id: d
+        text: "That the certificates never expire."
+        explanation: "It shows the current state only."
+    correct_option: b
+    explanation: "The status shows the control path only."
+
+  - id: ats057-final-q14
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Find why a global service does not balance"
+    source_readings:
+      - sections/section-020/module-04/course-01-a-checklist-for-a-service-that-does-not-balance.md
+    prompt: |-
+      A global Service gets replies only from the local cluster. Which check finds the most common cause?
+    options:
+      - id: a
+        text: "Check that the Service has `service.cilium.io/global: \"true\"` in every cluster."
+        explanation: "Correct. A cluster without the annotation does not share its backends."
+      - id: b
+        text: "Delete the Service and recreate it with another port in each cluster."
+        explanation: "Ports must match in every cluster."
+      - id: c
+        text: "Disable the mesh and enable it again."
+        explanation: "This is not the first check."
+      - id: d
+        text: "Scale the Deployment to zero."
+        explanation: "This removes backends."
+    correct_option: a
+    explanation: "Check the annotation first."
+
+  - id: ats057-final-q15
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Disconnect and disable in the right order"
+    source_readings:
+      - sections/section-010/module-04/course-04-disconnect-and-disable-a-mesh.md
+    prompt: |-
+      Which statement about leaving a mesh is correct?
+    options:
+      - id: a
+        text: "Disable removes the connection and the policies of other clusters."
+        explanation: "Disable removes the apiserver, not the connections."
+      - id: b
+        text: "Disconnect deletes the apiserver and the certificates."
+        explanation: "Disconnect leaves them in place."
+      - id: c
+        text: "A disconnected cluster can reconnect with the connect command, because its apiserver still runs."
+        explanation: "Correct."
+      - id: d
+        text: "Policy rules for the other cluster stay active and match its pods."
+        explanation: "They stop matching after the disconnect."
+    correct_option: c
+    explanation: "Disconnect keeps the apiserver; disable removes it."
