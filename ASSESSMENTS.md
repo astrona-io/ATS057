@@ -29,3 +29,12 @@ ID, not display position, so a later renderer can shuffle choices safely.
 
 The banks contain answer keys and are public learning material, so this is not
 a secure examination bank. Do not treat scores as an official CCA result.
+
+## Hands-On Coverage
+
+This course has 2 ungraded playgrounds and 2 independent draft labs. Tasks, launch entries and solutions follow their teaching reading. Guided practice precedes the summary. Static and offline checks are separate from live execution, which remains pending.
+
+| Module | Labs in reading order |
+| --- | --- |
+| 010/01 | Inventory Cluster Mesh Prerequisites |
+| 020/01 | Inspect A Service Before Global Discovery |

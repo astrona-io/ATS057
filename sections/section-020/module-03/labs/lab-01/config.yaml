@@ -1,0 +1,75 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Export A Service With The Multi-Cluster Services API (LAB). UNTESTED: written from the documentation, not yet run.
+# Two kind clusters side by side: "west" (this environment) and "east"
+# (runtime.kind.clusters). Cluster Mesh is enabled and the two clusters are connected.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-057-lab-020-03
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+    preloadImages:
+      - hashicorp/http-echo:1.0
+      - curlimages/curl:8.22.0
+    networking:
+      disableDefaultCNI: true
+      podSubnet: 10.241.0.0/16
+      serviceSubnet: 10.101.0.0/16
+    clusters:
+      - name: east
+        image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+        preloadImages:
+          - hashicorp/http-echo:1.0
+          - curlimages/curl:8.22.0
+        networking:
+          disableDefaultCNI: true
+          podSubnet: 10.242.0.0/16
+          serviceSubnet: 10.102.0.0/16
+
+bootstrap:
+  init:
+    - name: start-state
+      description: Install Cilium in both clusters and deploy the Starfleet workloads
+      type: file
+      source: bootstrap/setup.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: reference-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: serviceexport-west
+      description: "The Service bridge is exported from west with a ServiceExport"
+      type: file
+      source: validation/validate-serviceexport-west.sh
+      hint: "A ServiceExport has the same name and namespace as the Service it exports."
+    - name: serviceexport-east
+      description: "The Service bridge is exported from east with a ServiceExport"
+      type: file
+      source: validation/validate-serviceexport-east.sh
+      hint: "Create the ServiceExport in every cluster that has backends."
+    - name: clusterset-dns-west
+      description: "The shuttle in west reaches bridge in both clusters through the clusterset.local name"
+      type: file
+      source: validation/validate-clusterset-dns-west.sh
+      hint: "Enable clustermesh.mcsapi.enabled and clustermesh.mcsapi.corednsAutoConfigure.enabled with cilium upgrade, then wait for CoreDNS."
+    - name: clusterset-dns-east
+      description: "The shuttle in east reaches bridge in both clusters through the clusterset.local name"
+      type: file
+      source: validation/validate-clusterset-dns-east.sh
+      hint: "Enable the MCS-API support in both clusters, not only in one."
+
+teardown:
+  keepCluster: false

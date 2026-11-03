@@ -3,22 +3,28 @@ draft: true
 exam_objectives:
 - Understand the Benefits of Cluster Mesh for Multi-cluster Connectivity
 ---
-# Cluster Mesh Connectivity And Trust Prerequisites
+# Cluster Mesh Architecture And Prerequisites
 
-This module develops cluster Mesh Connectivity And Trust Prerequisites. Use the explanations to connect intended behavior with responsible components and observable evidence.
+Two Kubernetes clusters do not share pods, Services or network policy. Cluster Mesh is the Cilium feature that lets the pods and Services of several clusters reach each other while each cluster keeps its own control plane. Before you connect two clusters, you must know what the mesh exchanges, which components do the work, and which conditions each cluster must meet. A repeated cluster name, an overlapping address range or a different certificate authority stops a connection before it starts.
 
-## Learning Goals
+The module has two parts. The first explains what Cluster Mesh connects, the components of a mesh, the trust domain and the prerequisites. The second reads each prerequisite from two live clusters. A graded lab then asks you to repair a cluster whose identity collides with the identity of the other cluster.
 
-- Explain cross-cluster workload connectivity and independent control planes.
-- Identify unique cluster identity and compatible addressing requirements.
-- Separate mesh state exchange from the data path.
-- Evaluate policy, trust and failure-domain consequences.
+## Learning objectives
 
-## Before You Start
+After this module you can:
 
-Examples illustrate declared relationships and reasoning. No execution environment is required or claimed.
+- Name the benefits of Cluster Mesh: pod-to-pod reach across clusters, global Services and cluster-aware policy.
+- Describe the `clustermesh-apiserver` and say which traffic uses the control path and which uses the data path.
+- List the prerequisites: unique cluster name and ID, non-overlapping pod ranges, node connectivity, one datapath mode and a shared certificate authority.
+- Read the cluster name and ID of a running cluster and change them with `cilium upgrade`.
+- Explain why all clusters of a mesh form one trust domain.
 
-## Reading Order
+## Before you start
 
-1. Cluster Mesh Connectivity And Trust Prerequisites
-2. Summary
+You need Kubernetes basics: pods, Services, namespaces and `kubectl`. You also need to know that Cilium is the networking plugin that runs on every node.
+
+The playground has two single-node kind clusters running Kubernetes 1.35, named `west` and `east`, both running Cilium. Cluster Mesh is not enabled yet. Each cluster runs the example workloads `probe`, `bridge` and `scout` and a client pod `shuttle` in the namespace `starfleet`.
+
+Launch the playground now and keep it next to you while you read:
+
+<!-- astrona:playground -->

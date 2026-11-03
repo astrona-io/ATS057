@@ -5,13 +5,13 @@ exam_objectives:
 ---
 # Understand the Benefits of Cluster Mesh for Multi-cluster Connectivity
 
-This section covers understand the Benefits of Cluster Mesh for Multi-cluster Connectivity. It develops cluster Mesh Connectivity And Trust Prerequisites through mechanisms, examples, prerequisites and failure reasoning.
+Separate Kubernetes clusters do not share pods, Services or network policy. This section shows what Cilium Cluster Mesh connects, how to connect two clusters and how to restrict the traffic that the connection allows. Every step runs on two kind clusters, `west` and `east`, that both run Cilium.
 
-Read the module goals, teaching and closing summary in order. YAML checks are indexed separately and appear after designated summaries. Larger domains include an intermediate checkpoint before the final review.
+The section has three modules. The first explains the architecture of a mesh and its prerequisites. The second enables Cluster Mesh and connects the clusters. The third explains cluster identity in policy and writes cluster-aware network policies. Each module has a playground and a graded lab. A capstone lab combines the three modules, and a quiz closes the section.
 
 ## Learning Outcomes
 
-- Explain cross-cluster workload connectivity and independent control planes.
-- Identify unique cluster identity and compatible addressing requirements.
-- Separate mesh state exchange from the data path.
-- Evaluate policy, trust and failure-domain consequences.
+- Explain the benefits of Cluster Mesh and the components that provide them.
+- Check the prerequisites: unique name and ID, pod ranges, node connectivity, datapath mode and trust.
+- Enable and connect Cluster Mesh and verify the control plane and the data path.
+- Write a `CiliumNetworkPolicy` that allows one workload of one named cluster.

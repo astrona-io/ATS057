@@ -3,82 +3,103 @@ draft: true
 exam_objectives:
 - Understand the Benefits of Cluster Mesh for Multi-cluster Connectivity
 ---
-# Guided Practice: Inventory Cluster Mesh Prerequisites
+# Inspect Cluster Identity, Address Ranges And Trust
 
-Use a host shell with the private kubeconfig for this module playground. A kubeconfig identifies the cluster and credentials used by kubectl, the Kubernetes command-line tool.
+A mesh that fails to connect almost always fails because of one of the prerequisites: a repeated name or ID, overlapping address ranges, a missing route between nodes, or two different certificate authorities. Each of these can be read from the clusters before any connection is attempted. This part turns the prerequisites into checks that you run against two clusters, and it shows what a fault in each one looks like.
+
+## Where the identity is stored
+
+Cilium reads its cluster name and cluster ID from the ConfigMap `cilium-config` in the `kube-system` namespace. The Helm values `cluster.name` and `cluster.id` write those two keys. The `cilium` agents read them at start, so a change takes effect only after the agents restart.
+
+The identity has a second use. Every pod gets a security identity, which is a number derived from its labels. In a mesh the cluster name is part of the labels that Cilium adds to each endpoint, under the key `io.cilium.k8s.policy.cluster`. This is why two clusters with the same name cannot be told apart by policy.
+
+Cilium also reads the ID when it creates the identity numbers. Two clusters with the same ID could produce the same identity number for different pods. For that reason every cluster in a mesh needs its own name and its own ID.
 
 <!-- astrona:playground:renew -->
 
-```sh
-export KUBECONFIG="$(astrona kubeconfig ats-057-playground-010-01)"
-test "$(kubectl config current-context)" = "kind-astro-ats-057-playground-010-01" || exit 1
-node_name="astro-ats-057-playground-010-01-control-plane"
-worker_name="astro-ats-057-playground-010-01-worker"
-```
+## Check the identity of both clusters
 
-Keep this connection selected. Host-level commands name only this environment's node containers. They do not operate on the host operating system.
-
-## Inspect And Explain
-
-Cilium manages the private two-node cluster. Hubble Relay and the BGP control plane are enabled. The probe and two clients are healthy; no learner policy or evidence report exists. This baseline uses kube-proxy and tunnelling.
-
-Inspect the current objects before changing them:
+Open a shell in the playground and save the two context names:
 
 ```sh
-kubectl -n starfleet get pods -o wide
-kubectl get nodes -o wide
+export WEST="$(kubectl config current-context)"
+export EAST="$ASTRONA_CLUSTER_EAST_CONTEXT"
 ```
 
-Record local cluster identity and address allocations before adding a peer. This one-cluster prerequisite lab does not test TLS trust or remote connectivity. A second cluster, distinct identity and nonoverlapping PodCIDRs are still needed.
-
-Record observations in `starfleet/evidence`, whose `report.json` contains the stated report. The verifier reads the live API again; invented values do not pass.
-
-
-Save this as `record.py`:
-
-```python
-import json,subprocess,time,sys,tempfile,os
-
-def call(*args):
- r=subprocess.run(list(args),text=True,capture_output=True,timeout=20)
- assert r.returncode==0, 'Observation command failed: '+args[0]
- return r.stdout.strip()
-def obj(kind,name,ns='starfleet'):
- return json.loads(call('kubectl',*(['-n',ns] if ns else []),'get',kind,name,'-o','json'))
-def api(path):
- script='import urllib.request; print(urllib.request.urlopen('+repr('http://prometheus:9090'+path)+',timeout=8).read().decode())'
- return json.loads(call('kubectl','-n','starfleet','exec','shuttle','--','python','-c',script))
-def save(data):
- resource={'apiVersion':'v1','kind':'ConfigMap','metadata':{'name':'evidence','namespace':'starfleet'},'data':{'report.json':json.dumps(data,sort_keys=True)}}
- with tempfile.NamedTemporaryFile(mode='w',suffix='.json',delete=False) as f:json.dump(resource,f);path=f.name
- try:call('kubectl','apply','-f',path)
- finally:os.unlink(path)
-
-assert call('kubectl','config','current-context') == 'kind-astro-ats-057-playground-010-01'
-data=obj('configmap','cilium-config','kube-system')['data'];service=obj('service','probe')
-report={'cluster_name':data.get('cluster-name','default'),'cluster_id':data.get('cluster-id','0'),'service_namespace':service['metadata']['namespace'],'service_name':service['metadata']['name'],'pod_ip':obj('pod','shuttle')['status']['podIP']}
-save(report)
-```
-
-Apply the scoped correction:
+Read the name and the ID from each cluster:
 
 ```sh
-python3 record.py
+for context in "$WEST" "$EAST"; do
+  kubectl --context "$context" -n kube-system get configmap cilium-config \
+    -o jsonpath='{.data.cluster-name}{" "}{.data.cluster-id}{"\n"}'
+done
 ```
 
-## Verify The Result
+The first line is `west 1` and the second is `east 2`. Because the values differ, the first prerequisite holds.
 
-Observe the actual result. A denied request returns a nonzero status when the denial works, so run it separately from a shell sequence that stops on error. Status convergence and a successful request establish different parts of the result.
+## Check the pod address ranges
+
+Each node receives a pod range from the cluster's pod network. Two clusters whose ranges overlap would give the same IP address to pods in both, and a mesh cannot route to an address that exists twice.
 
 ```sh
-kubectl -n starfleet get configmaps
-kubectl -n starfleet get deployment probe -o yaml
+for context in "$WEST" "$EAST"; do
+  kubectl --context "$context" get nodes -o jsonpath='{.items[*].spec.podCIDR}{"\n"}'
+done
 ```
 
-Record the local baseline that a mesh configuration would depend on. The commands above deliberately target one environment. Keep its remaining components available so an unrelated failure cannot stand in for the required denial or correction. No example command output is presented as evidence of a completed run. A matching field alone does not establish that a process used it or that a controller reconciled it.
+The pod range of `west` starts with `10.241.` and the pod range of `east` starts with `10.242.`. They are different ranges, so they do not overlap.
 
+## Check node reachability
+
+The nodes of both clusters are kind containers on one container network. A pod in one cluster must be able to reach the node IP address of the other cluster, because the mesh data path runs between nodes. Read the node address of `east`:
+
+```sh
+EAST_NODE_IP="$(kubectl --context "$EAST" get nodes -o jsonpath='{.items[0].status.addresses[?(@.type=="InternalIP")].address}')"
+echo "$EAST_NODE_IP"
+```
+
+Then request that address from the `shuttle` pod of `west` on the port of the Kubernetes API server of `east`:
+
+```sh
+kubectl --context "$WEST" -n starfleet exec shuttle -- curl -sk -o /dev/null -w "%{http_code}\n" --max-time 5 "https://$EAST_NODE_IP:6443"
+```
+
+Any HTTP status code shows that the packet reached the node of `east` and came back. No output and a timeout show that the path is blocked.
+
+## Compare the certificate authority
+
+Cluster Mesh uses mutual TLS between the clusters. Each side checks that the certificate of the other side was signed by a certificate authority that it trusts. Cilium stores its authority in the secret `cilium-ca` in `kube-system`. Print a fingerprint of the authority certificate of each cluster:
+
+```sh
+for context in "$WEST" "$EAST"; do
+  kubectl --context "$context" -n kube-system get secret cilium-ca -o jsonpath='{.data.ca\.crt}' | base64 -d | openssl x509 -noout -fingerprint -sha256
+done
+```
+
+In this playground both lines are identical, because the setup installed both clusters with the same authority. If the fingerprints differ, the clusters have different authorities. Cilium then needs an explicit trust bundle, or the clusters must be reinstalled with a common authority.
+
+## Read the datapath mode
+
+The datapath mode is stored in the same ConfigMap. Both clusters must use the same one:
+
+```sh
+for context in "$WEST" "$EAST"; do
+  kubectl --context "$context" -n kube-system get configmap cilium-config -o jsonpath='{.data.routing-mode}{" "}{.data.tunnel-protocol}{"\n"}'
+done
+```
+
+The two lines must match. A cluster in tunnel mode and a cluster in native routing mode cannot form a mesh.
+
+## What you now know
+
+You can read the five prerequisites from live clusters: the name and ID, the pod ranges, the node reachability, the certificate authority and the datapath mode. The checks are cheap and they run before any change, so they are the first step when a mesh does not form. What is still open is how to connect two clusters that pass all five checks.
 
 ## Common pitfalls
 
+- Reading the name from the Helm release instead of from the ConfigMap that the agents actually use. The ConfigMap is what the running agents read.
+- Assuming that a different cluster name is enough. The numeric ID must differ too.
+- Comparing node ranges by eye. Compare the full ranges, because a short prefix can hide an overlap.
+- Checking the certificate authority only after the connection fails with a TLS error.
+
 > [!WARNING]
-> Confirm the private context and exact node names before a change. Check the stated scope and live result. Do not change unrelated components to hide the original fault.
+> Do not change the cluster name or ID of a cluster that already runs workloads without restarting those workloads. Their security identities were created with the old values.

@@ -1,8 +1,7 @@
 training:
   id: ATS057
   title: 'CCA: Cluster Mesh'
-  description: 'Detailed reading material and reusable YAML knowledge checks for CCA:
-    Cluster Mesh. Technical content remains draft. Private playgrounds and draft independent labs are included.'
+  description: 'Reading material, two-cluster playgrounds, graded labs and quizzes for CCA: Cluster Mesh. Technical content remains draft. Labs and playgrounds are untested.'
   certification:
     name: Cilium Certified Associate
     code: CCA
@@ -30,82 +29,245 @@ modules:
     title: How This Course Is Made
     path: sections/intro/course-03-how-this-course-is-made.md
 - id: module-010
-  title: Understand the Benefits of Cluster Mesh for Multi-cluster Connectivity
-  description: Developed reading and reasoning for Understand the Benefits of Cluster
-    Mesh for Multi-cluster Connectivity.
-  maturity: alpha
+  title: "Understand the Benefits of Cluster Mesh for Multi-cluster Connectivity"
+  description: >
+    Explains what Cluster Mesh connects, enables and connects two clusters, and restricts cross-cluster traffic with network policy.
+  status: alpha
   content:
   - type: reading
-    title: Understand the Benefits of Cluster Mesh for Multi-cluster Connectivity
+    title: "Understand the Benefits of Cluster Mesh for Multi-cluster Connectivity"
     path: sections/section-010/README.md
   - type: reading
-    title: Cluster Mesh Connectivity And Trust Prerequisites
+    title: "Cluster Mesh Architecture And Prerequisites"
     path: sections/section-010/module-01/course.md
   - type: reading
-    title: Cluster Mesh Connectivity And Trust Prerequisites
+    title: "What Cluster Mesh Connects And What It Requires"
     path: sections/section-010/module-01/course-01-cluster-mesh-connectivity-and-trust-prerequisites.md
   - type: reading
-    title: Inventory Cluster Mesh Prerequisites — Task
-    path: sections/section-010/module-01/labs/lab-01/question.md
-  - type: lab
-    title: Inventory Cluster Mesh Prerequisites
-    path: sections/section-010/module-01/labs/lab-01
-    difficulty: intermediate
-    estimated_duration: 25m
-    topic: cilium-diagnostics
-    task_kind: build
-    learning_goals:
-    - Record the local baseline that a mesh configuration would depend on.
-    tags:
-    - cca
-    - cilium-diagnostics
-  - type: reading
-    title: Inventory Cluster Mesh Prerequisites — Solution
-    path: sections/section-010/module-01/labs/lab-01/solution.md
-  - type: reading
-    title: 'Guided Practice: Inventory Cluster Mesh Prerequisites'
+    title: "Inspect Cluster Identity, Address Ranges And Trust"
     path: sections/section-010/module-01/course-02-guided-practice.md
   - type: reading
-    title: Summary
+    title: "Fix A Cluster Identity Conflict - Task"
+    path: sections/section-010/module-01/labs/lab-01/question.md
+  - type: lab
+    title: "Fix A Cluster Identity Conflict"
+    path: sections/section-010/module-01/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 30m
+    topic: cilium-clustermesh
+    task_kind: fix
+    tags: [cluster-mesh, cluster-id, cluster-name, cilium-upgrade]
+    learning_goals:
+      - "Read the cluster name and ID of a running Cilium cluster"
+      - "Change them with cilium upgrade and restart the Cilium components"
+    resources:
+      - name: "Cilium Cluster Mesh setup"
+        url: https://docs.cilium.io/en/stable/network/clustermesh/clustermesh/
+  - type: reading
+    title: "Summary"
     path: sections/section-010/module-01/course-03-summary.md
+  - type: reading
+    title: "Enable And Connect Cluster Mesh"
+    path: sections/section-010/module-02/course.md
+  - type: reading
+    title: "Enable Cluster Mesh In A Cluster"
+    path: sections/section-010/module-02/course-01-enable-cluster-mesh-in-a-cluster.md
+  - type: reading
+    title: "Connect Clusters And Verify The Data Path"
+    path: sections/section-010/module-02/course-02-connect-clusters-and-verify.md
+  - type: reading
+    title: "Enable And Connect Cluster Mesh - Task"
+    path: sections/section-010/module-02/labs/lab-01/question.md
+  - type: lab
+    title: "Enable And Connect Cluster Mesh"
+    path: sections/section-010/module-02/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 30m
+    topic: cilium-clustermesh
+    task_kind: build
+    tags: [cluster-mesh, clustermesh-apiserver, nodeport, cilium-cli]
+    learning_goals:
+      - "Enable Cluster Mesh in two clusters with a node port"
+      - "Connect the clusters and prove the data path"
+    resources:
+      - name: "Cilium Cluster Mesh setup"
+        url: https://docs.cilium.io/en/stable/network/clustermesh/clustermesh/
+  - type: reading
+    title: "Summary"
+    path: sections/section-010/module-02/course-03-summary.md
+  - type: reading
+    title: "Cross-Cluster Connectivity And Network Policy"
+    path: sections/section-010/module-03/course.md
+  - type: reading
+    title: "Identity And The Cluster Label"
+    path: sections/section-010/module-03/course-01-identity-and-the-cluster-label.md
+  - type: reading
+    title: "Writing Cluster-Aware Policies"
+    path: sections/section-010/module-03/course-02-writing-cluster-aware-policies.md
+  - type: reading
+    title: "Restrict Cross-Cluster Traffic With A Cilium Network Policy - Task"
+    path: sections/section-010/module-03/labs/lab-01/question.md
+  - type: lab
+    title: "Restrict Cross-Cluster Traffic With A Cilium Network Policy"
+    path: sections/section-010/module-03/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 30m
+    topic: cilium-clustermesh
+    task_kind: build
+    tags: [cluster-mesh, ciliumnetworkpolicy, identity]
+    learning_goals:
+      - "Write a policy that allows one workload of one cluster"
+      - "Test the pod with the same labels in the wrong cluster"
+    resources:
+      - name: "Cluster Mesh network policy"
+        url: https://docs.cilium.io/en/stable/network/clustermesh/policy/
+  - type: reading
+    title: "Summary"
+    path: sections/section-010/module-03/course-03-summary.md
+  - type: reading
+    title: "Connect Two Clusters And Restrict Cross-Cluster Traffic - Task"
+    path: sections/section-010/capstone/labs/lab-01/question.md
+  - type: lab
+    title: "Connect Two Clusters And Restrict Cross-Cluster Traffic"
+    path: sections/section-010/capstone/labs/lab-01
+    difficulty: advanced
+    estimated_duration: 45m
+    topic: cilium-clustermesh
+    task_kind: build
+    tags: [cluster-mesh, capstone]
+    learning_goals:
+      - "Enable and connect Cluster Mesh"
+      - "Allow only one workload of one cluster to reach a service"
+    resources:
+      - name: "Cilium Cluster Mesh setup"
+        url: https://docs.cilium.io/en/stable/network/clustermesh/clustermesh/
+  - type: quiz
+    title: "Knowledge Check: Benefits Of Cluster Mesh For Multi-Cluster Connectivity"
+    path: sections/section-010/quiz.yaml
+    pass_score: 70
 - id: module-020
-  title: Achieve Service Discovery and Load Balancing Across Clusters with Cluster
-    Mesh
-  description: Developed reading and reasoning for Achieve Service Discovery and Load
-    Balancing Across Clusters with Cluster Mesh.
-  maturity: alpha
+  title: "Achieve Service Discovery and Load Balancing Across Clusters with Cluster Mesh"
+  description: >
+    Declares global services, steers traffic with affinity, handles unreachable clusters and uses the Multi-Cluster Services API.
+  status: alpha
   content:
   - type: reading
-    title: Achieve Service Discovery and Load Balancing Across Clusters with Cluster
-      Mesh
+    title: "Achieve Service Discovery and Load Balancing Across Clusters with Cluster Mesh"
     path: sections/section-020/README.md
   - type: reading
-    title: Global Service Backends And Cross-Cluster Discovery
+    title: "Global Services And Cross-Cluster Discovery"
     path: sections/section-020/module-01/course.md
   - type: reading
-    title: Global Service Backends And Cross-Cluster Discovery
+    title: "Global Services And Backend Merging"
     path: sections/section-020/module-01/course-01-global-service-backends-and-cross-cluster-discovery.md
   - type: reading
-    title: Inspect A Service Before Global Discovery — Task
-    path: sections/section-020/module-01/labs/lab-01/question.md
-  - type: lab
-    title: Inspect A Service Before Global Discovery
-    path: sections/section-020/module-01/labs/lab-01
-    difficulty: intermediate
-    estimated_duration: 25m
-    topic: cilium-diagnostics
-    task_kind: build
-    learning_goals:
-    - Record the local baseline that a mesh configuration would depend on.
-    tags:
-    - cca
-    - cilium-diagnostics
-  - type: reading
-    title: Inspect A Service Before Global Discovery — Solution
-    path: sections/section-020/module-01/labs/lab-01/solution.md
-  - type: reading
-    title: 'Guided Practice: Inspect A Service Before Global Discovery'
+    title: "Control Which Clusters Share Their Backends"
     path: sections/section-020/module-01/course-02-guided-practice.md
   - type: reading
-    title: Summary
+    title: "Create A Global Service Across Two Clusters - Task"
+    path: sections/section-020/module-01/labs/lab-01/question.md
+  - type: lab
+    title: "Create A Global Service Across Two Clusters"
+    path: sections/section-020/module-01/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 30m
+    topic: cilium-clustermesh
+    task_kind: build
+    tags: [cluster-mesh, global-service, annotations]
+    learning_goals:
+      - "Make a Service global in two clusters"
+      - "Use shared false so a cluster uses but does not offer backends"
+    resources:
+      - name: "Load balancing and global services"
+        url: https://docs.cilium.io/en/stable/network/clustermesh/services/
+  - type: reading
+    title: "Summary"
     path: sections/section-020/module-01/course-03-summary.md
+  - type: reading
+    title: "Service Affinity And Failure Handling"
+    path: sections/section-020/module-02/course.md
+  - type: reading
+    title: "Service Affinity"
+    path: sections/section-020/module-02/course-01-service-affinity.md
+  - type: reading
+    title: "Unreachable Clusters And Limits"
+    path: sections/section-020/module-02/course-02-unreachable-clusters-and-limits.md
+  - type: reading
+    title: "Prefer Local Or Remote Backends With Service Affinity - Task"
+    path: sections/section-020/module-02/labs/lab-01/question.md
+  - type: lab
+    title: "Prefer Local Or Remote Backends With Service Affinity"
+    path: sections/section-020/module-02/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 30m
+    topic: cilium-clustermesh
+    task_kind: build
+    tags: [cluster-mesh, affinity, cachettl]
+    learning_goals:
+      - "Set affinity local and remote on global Services"
+      - "Verify that other clusters keep their own choice"
+    resources:
+      - name: "Service affinity"
+        url: https://docs.cilium.io/en/stable/network/clustermesh/affinity/
+  - type: reading
+    title: "Summary"
+    path: sections/section-020/module-02/course-03-summary.md
+  - type: reading
+    title: "Multi-Cluster Services API And EndpointSlice Synchronization"
+    path: sections/section-020/module-03/course.md
+  - type: reading
+    title: "ServiceExport And Clusterset DNS"
+    path: sections/section-020/module-03/course-01-serviceexport-and-clusterset-dns.md
+  - type: reading
+    title: "Conflicts And EndpointSlice Synchronization"
+    path: sections/section-020/module-03/course-02-conflicts-and-endpointslice-synchronization.md
+  - type: reading
+    title: "Export A Service With The Multi-Cluster Services API - Task"
+    path: sections/section-020/module-03/labs/lab-01/question.md
+  - type: lab
+    title: "Export A Service With The Multi-Cluster Services API"
+    path: sections/section-020/module-03/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 30m
+    topic: cilium-clustermesh
+    task_kind: build
+    tags: [cluster-mesh, mcs-api, serviceexport, coredns]
+    learning_goals:
+      - "Enable the MCS-API support in two clusters"
+      - "Export a Service and request its clusterset.local name"
+    resources:
+      - name: "Multi-Cluster Services API"
+        url: https://docs.cilium.io/en/stable/network/clustermesh/mcsapi/
+  - type: reading
+    title: "Summary"
+    path: sections/section-020/module-03/course-03-summary.md
+  - type: reading
+    title: "Repair And Tune Cross-Cluster Service Discovery - Task"
+    path: sections/section-020/capstone/labs/lab-01/question.md
+  - type: lab
+    title: "Repair And Tune Cross-Cluster Service Discovery"
+    path: sections/section-020/capstone/labs/lab-01
+    difficulty: advanced
+    estimated_duration: 45m
+    topic: cilium-clustermesh
+    task_kind: build
+    tags: [cluster-mesh, capstone]
+    learning_goals:
+      - "Repair a missing global Service"
+      - "Tune affinity and sharing"
+    resources:
+      - name: "Load balancing and global services"
+        url: https://docs.cilium.io/en/stable/network/clustermesh/services/
+  - type: quiz
+    title: "Knowledge Check: Service Discovery And Load Balancing Across Clusters"
+    path: sections/section-020/quiz.yaml
+    pass_score: 70
+- id: module-final
+  title: "Final Domain Quiz"
+  description: Checks the whole Cluster Mesh domain.
+  status: alpha
+  content:
+  - type: quiz
+    title: "Final Domain Quiz: Cluster Mesh"
+    path: sections/final-domain-quiz.yaml
+    pass_score: 70

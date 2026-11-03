@@ -1,12 +1,17 @@
 #!/usr/bin/env bash
+# Reference solution for ats-057-lab-020-01, applied by `astrona test` only.
+# UNTESTED: written from the documentation, not yet run.
 set -euo pipefail
-if [[ "$(kubectl config current-context)" != "kind-astro-ats-057-lab-020-01-01" ]]; then
-  printf 'Refusing to operate on another Kubernetes context\n' >&2
-  exit 1
-fi
-lab_directory="$(cd "$(dirname "$0")/.." && pwd)"
-solution_directory="$lab_directory/solution"
-node_name="astro-ats-057-lab-020-01-01-control-plane"
-worker_name="astro-ats-057-lab-020-01-01-worker"
 
-python3 "$solution_directory/record.py"
+EAST_CONTEXT="${ASTRONA_CLUSTER_EAST_CONTEXT:?ASTRONA_CLUSTER_EAST_CONTEXT is not set}"
+if ! kubectl config get-contexts -o name | grep -qx "$EAST_CONTEXT"; then
+  export KUBECONFIG="${KUBECONFIG:-$HOME/.kube/config}:${ASTRONA_CLUSTER_EAST_KUBECONFIG:?ASTRONA_CLUSTER_EAST_KUBECONFIG is not set}"
+fi
+WEST_CONTEXT="$(kubectl config current-context)"
+
+for context in "$WEST_CONTEXT" "$EAST_CONTEXT"; do
+  kubectl --context "$context" -n starfleet annotate service probe service.cilium.io/global=true --overwrite
+  kubectl --context "$context" -n starfleet annotate service bridge service.cilium.io/global=true --overwrite
+done
+kubectl --context "$WEST_CONTEXT" -n starfleet annotate service bridge service.cilium.io/shared=false --overwrite
+sleep 15

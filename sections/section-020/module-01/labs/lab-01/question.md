@@ -1,35 +1,19 @@
----
-draft: true
-exam_objectives:
-- Achieve Service Discovery and Load Balancing Across Clusters with Cluster Mesh
----
-# Inspect A Service Before Global Discovery
+# Question
 
-Record the local baseline that a mesh configuration would depend on.
+Solve this question on: `terminal`
 
-## Starting state
-
-Cilium manages the private two-node cluster. Hubble Relay and the BGP control plane are enabled. The probe and two clients are healthy; no learner policy or evidence report exists. This baseline uses kube-proxy and tunnelling.
-
-Use a host shell with the private kubeconfig for this independent kind environment. A kubeconfig identifies the cluster and credentials used by kubectl, the Kubernetes command-line tool.
+The environment has two clusters. `astrona shell ats-057-lab-020-01` opens a shell in which `kubectl` points at the cluster `west`. The second cluster, `east`, is reached through the context named in `$ASTRONA_CLUSTER_EAST_CONTEXT`. Set two shell variables once:
 
 ```sh
-export KUBECONFIG="$(astrona kubeconfig ats-057-lab-020-01-01)"
-test "$(kubectl config current-context)" = "kind-astro-ats-057-lab-020-01-01" || exit 1
-node_name="astro-ats-057-lab-020-01-01-control-plane"
-worker_name="astro-ats-057-lab-020-01-01-worker"
+export WEST="$(kubectl config current-context)"
+export EAST="$ASTRONA_CLUSTER_EAST_CONTEXT"
 ```
 
-Keep this connection selected. Host-level commands name only this environment's node containers. They do not operate on the host operating system.
+Both clusters run the same example workloads in the namespace `starfleet`: the Deployments `probe`, `bridge` and `scout` (two replicas each, one Service each, port 80) and a client pod `shuttle`. Every replica answers a request with one line of text that names its workload and its cluster, for example `probe from east`. The cluster `west` also has a client pod `drifter` in the namespace `outpost`.
 
-## Required result
+Cluster Mesh is already enabled and the clusters are connected. The Services `probe` and `bridge` exist in both clusters, but each Service only uses the pods of its own cluster.
 
-Record the local Service name, namespace and endpoints. A global annotation alone does not create remote endpoints. This baseline has no mesh peer; the graded evidence is explicitly local.
+1. Make the Service `probe` a global service in both clusters. A request to `probe` from the `shuttle` of either cluster must then be answered by pods of both clusters.
+2. Make the Service `bridge` global in both clusters, but do not offer the `bridge` pods of `west` to `east`. The `shuttle` of `east` must be answered only by `bridge` pods of `east`. The `shuttle` of `west` must still be answered by `bridge` pods of both clusters.
 
-Record observations in `starfleet/evidence`, whose `report.json` contains the stated report. The verifier reads the live API again; invented values do not pass.
-
-The report object uses these fields: `cluster_name`, `cluster_id`, `service_namespace`, `service_name`, `pod_ip`. Keep numeric values numeric and preserve arrays and nested objects returned by the API.
-
-## Verify The Result
-
-The grader checks the required object fields and actual observations. Wait for controller convergence before submitting. Preserve the task's namespace, workload names and unrelated components.
+Use Service annotations only. Do not delete or recreate the Services, and do not change the pods.

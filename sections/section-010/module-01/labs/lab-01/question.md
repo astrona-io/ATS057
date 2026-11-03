@@ -1,35 +1,21 @@
----
-draft: true
-exam_objectives:
-- Understand the Benefits of Cluster Mesh for Multi-cluster Connectivity
----
-# Inventory Cluster Mesh Prerequisites
+# Question
 
-Record the local baseline that a mesh configuration would depend on.
+Solve this question on: `terminal`
 
-## Starting state
-
-Cilium manages the private two-node cluster. Hubble Relay and the BGP control plane are enabled. The probe and two clients are healthy; no learner policy or evidence report exists. This baseline uses kube-proxy and tunnelling.
-
-Use a host shell with the private kubeconfig for this independent kind environment. A kubeconfig identifies the cluster and credentials used by kubectl, the Kubernetes command-line tool.
+The environment has two clusters. `astrona shell ats-057-lab-010-01` opens a shell in which `kubectl` points at the cluster `west`. The second cluster, `east`, is reached through the context named in `$ASTRONA_CLUSTER_EAST_CONTEXT`. Set two shell variables once:
 
 ```sh
-export KUBECONFIG="$(astrona kubeconfig ats-057-lab-010-01-01)"
-test "$(kubectl config current-context)" = "kind-astro-ats-057-lab-010-01-01" || exit 1
-node_name="astro-ats-057-lab-010-01-01-control-plane"
-worker_name="astro-ats-057-lab-010-01-01-worker"
+export WEST="$(kubectl config current-context)"
+export EAST="$ASTRONA_CLUSTER_EAST_CONTEXT"
 ```
 
-Keep this connection selected. Host-level commands name only this environment's node containers. They do not operate on the host operating system.
+Both clusters run the same example workloads in the namespace `starfleet`: the Deployments `probe`, `bridge` and `scout` (two replicas each, one Service each, port 80) and a client pod `shuttle`. Every replica answers a request with one line of text that names its workload and its cluster, for example `probe from east`. The cluster `west` also has a client pod `drifter` in the namespace `outpost`.
 
-## Required result
+The `drifter` team plans to connect `west` and `east` with Cluster Mesh. A review of the two Cilium installations found a problem that blocks the connection. Both clusters report the same Cilium cluster name and the same cluster ID. Cluster Mesh needs a unique name and a unique numeric ID for every cluster.
 
-Record local cluster identity and address allocations before adding a peer. This one-cluster prerequisite lab does not test TLS trust or remote connectivity. A second cluster, distinct identity and nonoverlapping PodCIDRs are still needed.
+Fix the cluster `east` only:
 
-Record observations in `starfleet/evidence`, whose `report.json` contains the stated report. The verifier reads the live API again; invented values do not pass.
+1. Change the Cilium cluster name of `east` to `east` and its cluster ID to `2`. Keep every other Cilium setting of `east`.
+2. Make the Cilium agents and the Cilium operator in `east` run with the new values, and wait until they are ready again.
 
-The report object uses these fields: `cluster_name`, `cluster_id`, `service_namespace`, `service_name`, `pod_ip`. Keep numeric values numeric and preserve arrays and nested objects returned by the API.
-
-## Verify The Result
-
-The grader checks the required object fields and actual observations. Wait for controller convergence before submitting. Preserve the task's namespace, workload names and unrelated components.
+The cluster `west` must keep the name `west` and the ID `1`. Do not enable Cluster Mesh in this lab. The Cilium command-line tool (`cilium`) and `kubectl` can both reach either cluster with `--context`.

@@ -1,34 +1,75 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Fix A Cluster Identity Conflict (LAB). UNTESTED: written from the documentation, not yet run.
+# Two kind clusters side by side: "west" (this environment) and "east"
+# (runtime.kind.clusters). Cluster Mesh is not enabled: the two clusters do not know each other.
 apiVersion: astrona.io/v1
 metadata:
-  name: ats-057-lab-010-01-01
+  name: ats-057-lab-010-01
   docs:
-    prerequisites: docs/prerequisites.md
-    examQuestion: question.md
-    caseStudy: docs/case-study.md
-    guide: solution.md
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
 runtime:
   type: kind
   kind:
     image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
-    nodes:
-      workers: 1
+    preloadImages:
+      - hashicorp/http-echo:1.0
+      - curlimages/curl:8.22.0
     networking:
       disableDefaultCNI: true
-      podSubnet: 10.244.0.0/16
+      podSubnet: 10.241.0.0/16
+      serviceSubnet: 10.101.0.0/16
+    clusters:
+      - name: east
+        image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+        preloadImages:
+          - hashicorp/http-echo:1.0
+          - curlimages/curl:8.22.0
+        networking:
+          disableDefaultCNI: true
+          podSubnet: 10.242.0.0/16
+          serviceSubnet: 10.102.0.0/16
+
 bootstrap:
   init:
-  - name: seed-private-environment
-    type: file
-    source: bootstrap/setup.sh
-teardown:
-  keepCluster: false
+    - name: start-state
+      description: Install Cilium in both clusters and deploy the Starfleet workloads
+      type: file
+      source: bootstrap/setup.sh
+
+# Applied only by `astrona test`: the reference solution.
 testing:
   init:
-  - name: reference-result
-    type: file
-    source: solution/apply.sh
+    - name: reference-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
 validation:
-  script:
-    name: verify-fields-and-live-evidence
-    type: file
-    source: validate.sh
+  scripts:
+    - name: east-cluster-name
+      description: "The cluster east has the Cilium cluster name east"
+      type: file
+      source: validation/validate-east-cluster-name.sh
+      hint: "Set cluster.name for the east Cilium installation with cilium upgrade --context and --reuse-values."
+    - name: east-cluster-id
+      description: "The cluster east has the Cilium cluster ID 2"
+      type: file
+      source: validation/validate-east-cluster-id.sh
+      hint: "Set cluster.id=2 for the east Cilium installation."
+    - name: west-identity-unchanged
+      description: "The cluster west keeps the name west and the ID 1"
+      type: file
+      source: validation/validate-west-identity-unchanged.sh
+      hint: "Change only the east cluster. West must stay as it is."
+    - name: east-cilium-ready
+      description: "The Cilium agents and the operator in east are ready after the change"
+      type: file
+      source: validation/validate-east-cilium-ready.sh
+      hint: "Restart the cilium DaemonSet and the cilium-operator Deployment in east and wait for them."
+
+teardown:
+  keepCluster: false

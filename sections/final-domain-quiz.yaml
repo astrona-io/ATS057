@@ -1,0 +1,301 @@
+# Final domain quiz. Listed at the end of astrona.yaml as a `type: quiz` entry.
+schema_version: 1
+kind: question_bank
+id: ats057-final
+course_id: ATS057
+exam_code: CCA
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: domain
+  id: cluster-mesh
+  title: "Cluster Mesh: Final Domain Quiz"
+questions:
+  - id: ats057-final-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Explain what Cluster Mesh connects and what it does not copy"
+    source_readings:
+      - sections/section-010/module-01/course-01-cluster-mesh-connectivity-and-trust-prerequisites.md
+    prompt: |-
+      A team connects two clusters with Cluster Mesh. Which statement about the result is correct?
+    options:
+      - id: a
+        text: "Deployments created in one cluster appear in the other."
+        explanation: "Cluster Mesh does not copy Kubernetes objects."
+      - id: b
+        text: "Pods of one cluster can reach pods of the other cluster by pod IP address, and each cluster keeps its own API server."
+        explanation: "Correct. The mesh shares networking state and leaves the control planes separate."
+      - id: c
+        text: "The two clusters share one Kubernetes API server."
+        explanation: "Each cluster keeps its own API server."
+      - id: d
+        text: "Application data of the databases is replicated between clusters."
+        explanation: "Cluster Mesh exchanges networking state only."
+    correct_option: b
+    explanation: "The mesh exchanges endpoints, identities and Service backends. The control planes and the application data stay separate."
+
+  - id: ats057-final-q02
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "List the prerequisites of a cluster mesh"
+    source_readings:
+      - sections/section-010/module-01/course-01-cluster-mesh-connectivity-and-trust-prerequisites.md
+    prompt: |-
+      Two clusters were created from one template, and both report the cluster name `main` with the cluster ID `1`. What must change before they can join one mesh?
+    options:
+      - id: a
+        text: "Nothing, because the pod ranges are what matters."
+        explanation: "Name and ID must be unique as well."
+      - id: b
+        text: "Each cluster needs a unique cluster name and a unique cluster ID, and the pods of the changed cluster must be restarted."
+        explanation: "Correct. The identity is built from the name and ID."
+      - id: c
+        text: "Only the cluster ID. The name may repeat."
+        explanation: "Both name and ID must be unique."
+      - id: d
+        text: "The Cilium version must be changed."
+        explanation: "The version is not the cause of this fault."
+    correct_option: b
+    explanation: "Unique names and IDs are prerequisites. A change after workloads run requires a restart of those workloads."
+
+  - id: ats057-final-q03
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Choose the Service type of the clustermesh-apiserver"
+    source_readings:
+      - sections/section-010/module-02/course-01-enable-cluster-mesh-in-a-cluster.md
+    prompt: |-
+      Cluster Mesh must run in a kind cluster, which has no load balancer. The nodes of the clusters can reach each other. Which Service type fits the `clustermesh-apiserver`?
+    options:
+      - id: a
+        text: "`LoadBalancer`, because it always works."
+        explanation: "Without a load balancer the Service gets no address."
+      - id: b
+        text: "`NodePort`, because other clusters can reach a node address and port."
+        explanation: "Correct."
+      - id: c
+        text: "`ExternalName`, because the other cluster has a name."
+        explanation: "The Service type is not a name lookup."
+      - id: d
+        text: "No Service is needed."
+        explanation: "Other clusters need an address to connect to."
+    correct_option: b
+    explanation: "`--service-type NodePort` fits an environment where nodes are reachable and no load balancer exists."
+
+  - id: ats057-final-q04
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Separate control plane health from data path proof"
+    source_readings:
+      - sections/section-010/module-02/course-02-connect-clusters-and-verify.md
+    prompt: |-
+      `cilium clustermesh status --wait` is healthy in both clusters, but a pod in `west` cannot reach a pod IP address in `east`. What does this show?
+    options:
+      - id: a
+        text: "The status command is wrong."
+        explanation: "It reports the control plane correctly."
+      - id: b
+        text: "The control plane is healthy and the data path can still be blocked, for example by a firewall or a route."
+        explanation: "Correct. The two paths are separate."
+      - id: c
+        text: "The clusters must use the same cluster ID."
+        explanation: "IDs must differ."
+      - id: d
+        text: "The pod must be restarted."
+        explanation: "A restart does not fix a blocked path."
+    correct_option: b
+    explanation: "Always test the data path with a request to a remote pod IP address."
+
+  - id: ats057-final-q05
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Predict the result of shared false"
+    source_readings:
+      - sections/section-020/module-01/course-01-global-service-backends-and-cross-cluster-discovery.md
+    prompt: |-
+      Both clusters mark `bridge` global, and `west` also sets `service.cilium.io/shared: "false"`. What do the clients see?
+    options:
+      - id: a
+        text: "`west` clients see `west` only and `east` clients see both."
+        explanation: "The reverse is true."
+      - id: b
+        text: "`west` clients see both clusters and `east` clients see `east` only."
+        explanation: "Correct. `west` uses remote backends and offers none."
+      - id: c
+        text: "Both see `east` only."
+        explanation: "`west` still uses remote backends."
+      - id: d
+        text: "The Service stops being global."
+        explanation: "It stays global."
+    correct_option: b
+    explanation: "`shared: \"false\"` stops offering, not using."
+
+  - id: ats057-final-q06
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Use affinity local"
+    source_readings:
+      - sections/section-020/module-02/course-01-service-affinity.md
+    prompt: |-
+      `west` sets `service.cilium.io/affinity: local` on a global Service. All local pods then fail. What do clients in `west` reach?
+    options:
+      - id: a
+        text: "Nothing. Requests fail."
+        explanation: "Affinity falls back when no local backend is healthy."
+      - id: b
+        text: "The remote backends, because no local backend is healthy."
+        explanation: "Correct."
+      - id: c
+        text: "The local pods anyway."
+        explanation: "They are not healthy."
+      - id: d
+        text: "Clients in `east` are redirected."
+        explanation: "Affinity changes the choice of the cluster that sets it."
+    correct_option: b
+    explanation: "`local` prefers local backends and falls back to remote ones."
+
+  - id: ats057-final-q07
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain cacheTTL"
+    source_readings:
+      - sections/section-020/module-02/course-02-unreachable-clusters-and-limits.md
+    prompt: |-
+      The connection from `west` to `east` is lost and `clustermesh.cacheTTL` is at its default. What does the agent in `west` do with the backends of `east`?
+    options:
+      - id: a
+        text: "Removes them at once."
+        explanation: "The default does not remove them."
+      - id: b
+        text: "Keeps them until the connection returns, because the default is `0s`, which never revokes the cache."
+        explanation: "Correct."
+      - id: c
+        text: "Removes them after 30 seconds."
+        explanation: "No such default exists."
+      - id: d
+        text: "Restarts the cluster."
+        explanation: "The agent does not restart clusters."
+    correct_option: b
+    explanation: "A positive `cacheTTL` ends the keeping after that time."
+
+  - id: ats057-final-q08
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Use the MCS-API"
+    source_readings:
+      - sections/section-020/module-03/course-01-serviceexport-and-clusterset-dns.md
+    prompt: |-
+      Which name returns backends from every cluster that exported `bridge` in `starfleet`?
+    options:
+      - id: a
+        text: "`bridge.starfleet.svc.cluster.local`"
+        explanation: "That is the local name."
+      - id: b
+        text: "`bridge.starfleet.svc.clusterset.local`"
+        explanation: "Correct."
+      - id: c
+        text: "`bridge.derived.starfleet`"
+        explanation: "No such name exists."
+      - id: d
+        text: "`bridge.starfleet.mesh`"
+        explanation: "No such domain exists."
+    correct_option: b
+    explanation: "The domain `clusterset.local` answers for exported Services."
+
+  - id: ats057-final-q09
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain what the connect step stores"
+    source_readings:
+      - sections/section-010/module-02/course-02-connect-clusters-and-verify.md
+    prompt: |-
+      A learner runs `cilium clustermesh connect --context west --destination-context east` once. What is true afterwards?
+    options:
+      - id: a
+        text: "Only `west` can read the state of `east`."
+        explanation: "The default connection is bidirectional."
+      - id: b
+        text: "Each cluster stores the address and credentials of the other in the secret `cilium-clustermesh`."
+        explanation: "Correct. One run connects both directions."
+      - id: c
+        text: "The command must be run again in the other direction."
+        explanation: "One run is enough in the default mode."
+      - id: d
+        text: "Both clusters now share one certificate authority secret."
+        explanation: "The command does not merge authority secrets."
+    correct_option: b
+    explanation: "The secret in each cluster gets one entry for the remote cluster."
+
+  - id: ats057-final-q10
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Read the backend list"
+    source_readings:
+      - sections/section-020/module-01/course-02-guided-practice.md
+    prompt: |-
+      How can you see which backends an agent holds for a global service?
+    options:
+      - id: a
+        text: "With `kubectl get pods` in the cluster."
+        explanation: "That lists local pods only."
+      - id: b
+        text: "With `cilium-dbg service list` in the agent of the cluster."
+        explanation: "Correct. It shows the merged backends."
+      - id: c
+        text: "With `kubectl get ciliumnetworkpolicy`."
+        explanation: "That lists policies."
+      - id: d
+        text: "With `cilium clustermesh connect`."
+        explanation: "That command connects clusters."
+    correct_option: b
+    explanation: "The agent's service list shows the merged local and remote backends."
+
+  - id: ats057-final-q11
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Resolve conflicts"
+    source_readings:
+      - sections/section-020/module-03/course-02-conflicts-and-endpointslice-synchronization.md
+    prompt: |-
+      Two clusters export `bridge` with different ports. Which definition does Cilium use?
+    options:
+      - id: a
+        text: "The one of the newest export."
+        explanation: "The oldest wins."
+      - id: b
+        text: "The one of the oldest export."
+        explanation: "Correct."
+      - id: c
+        text: "The first one in alphabetical order of the cluster name."
+        explanation: "The creation time decides."
+      - id: d
+        text: "Neither. The import is deleted."
+        explanation: "The oldest definition is used."
+    correct_option: b
+    explanation: "The oldest export wins, so make the definitions match."
+
+  - id: ats057-final-q12
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Describe the components and paths of a mesh"
+    source_readings:
+      - sections/section-010/module-01/course-01-cluster-mesh-connectivity-and-trust-prerequisites.md
+    prompt: |-
+      Which traffic passes through the `clustermesh-apiserver`?
+    options:
+      - id: a
+        text: "All pod-to-pod traffic between clusters."
+        explanation: "Pod traffic goes directly between nodes."
+      - id: b
+        text: "The state that clusters exchange, over mutual TLS. Pod traffic does not pass through it."
+        explanation: "Correct. It is the control path."
+      - id: c
+        text: "Only DNS requests of the `clusterset.local` domain."
+        explanation: "DNS requests are answered by CoreDNS."
+      - id: d
+        text: "Requests of the Kubernetes API of the remote cluster."
+        explanation: "The Kubernetes API server of a cluster is a separate component."
+    correct_option: b
+    explanation: "The `clustermesh-apiserver` carries state on the control path. The data path runs between nodes."
+

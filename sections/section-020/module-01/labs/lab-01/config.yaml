@@ -1,34 +1,80 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Create A Global Service Across Two Clusters (LAB). UNTESTED: written from the documentation, not yet run.
+# Two kind clusters side by side: "west" (this environment) and "east"
+# (runtime.kind.clusters). Cluster Mesh is enabled and the two clusters are connected.
 apiVersion: astrona.io/v1
 metadata:
-  name: ats-057-lab-020-01-01
+  name: ats-057-lab-020-01
   docs:
-    prerequisites: docs/prerequisites.md
-    examQuestion: question.md
-    caseStudy: docs/case-study.md
-    guide: solution.md
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
 runtime:
   type: kind
   kind:
     image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
-    nodes:
-      workers: 1
+    preloadImages:
+      - hashicorp/http-echo:1.0
+      - curlimages/curl:8.22.0
     networking:
       disableDefaultCNI: true
-      podSubnet: 10.244.0.0/16
+      podSubnet: 10.241.0.0/16
+      serviceSubnet: 10.101.0.0/16
+    clusters:
+      - name: east
+        image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+        preloadImages:
+          - hashicorp/http-echo:1.0
+          - curlimages/curl:8.22.0
+        networking:
+          disableDefaultCNI: true
+          podSubnet: 10.242.0.0/16
+          serviceSubnet: 10.102.0.0/16
+
 bootstrap:
   init:
-  - name: seed-private-environment
-    type: file
-    source: bootstrap/setup.sh
-teardown:
-  keepCluster: false
+    - name: start-state
+      description: Install Cilium in both clusters and deploy the Starfleet workloads
+      type: file
+      source: bootstrap/setup.sh
+
+# Applied only by `astrona test`: the reference solution.
 testing:
   init:
-  - name: reference-result
-    type: file
-    source: solution/apply.sh
+    - name: reference-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
 validation:
-  script:
-    name: verify-fields-and-live-evidence
-    type: file
-    source: validate.sh
+  scripts:
+    - name: probe-global-both
+      description: "The Service probe is annotated as global in both clusters"
+      type: file
+      source: validation/validate-probe-global-both.sh
+      hint: "The annotation is service.cilium.io/global: \"true\" and it must exist on the Service in each cluster."
+    - name: probe-answers-from-both
+      description: "A request to the probe Service from the shuttle in west is answered by both clusters"
+      type: file
+      source: validation/validate-probe-answers-from-both.sh
+      hint: "Wait a few seconds after annotating. Cilium needs time to merge the backends."
+    - name: bridge-west-not-shared
+      description: "The bridge backends of west are not shared with east"
+      type: file
+      source: validation/validate-bridge-west-not-shared.sh
+      hint: "Add service.cilium.io/shared=\"false\" to the Service in west only. Both Services stay global."
+    - name: bridge-east-sees-only-east
+      description: "The shuttle in east is answered only by bridge in east"
+      type: file
+      source: validation/validate-bridge-east-sees-only-east.sh
+      hint: "Shared false means the cluster does not offer its backends to others."
+    - name: bridge-west-sees-both
+      description: "The shuttle in west is still answered by bridge in west and in east"
+      type: file
+      source: validation/validate-bridge-west-sees-both.sh
+      hint: "Shared false does not stop west from using the backends of east."
+
+teardown:
+  keepCluster: false

@@ -1,0 +1,75 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Prefer Local Or Remote Backends With Service Affinity (LAB). UNTESTED: written from the documentation, not yet run.
+# Two kind clusters side by side: "west" (this environment) and "east"
+# (runtime.kind.clusters). Cluster Mesh is enabled and the two clusters are connected.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-057-lab-020-02
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+    preloadImages:
+      - hashicorp/http-echo:1.0
+      - curlimages/curl:8.22.0
+    networking:
+      disableDefaultCNI: true
+      podSubnet: 10.241.0.0/16
+      serviceSubnet: 10.101.0.0/16
+    clusters:
+      - name: east
+        image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+        preloadImages:
+          - hashicorp/http-echo:1.0
+          - curlimages/curl:8.22.0
+        networking:
+          disableDefaultCNI: true
+          podSubnet: 10.242.0.0/16
+          serviceSubnet: 10.102.0.0/16
+
+bootstrap:
+  init:
+    - name: start-state
+      description: Install Cilium in both clusters and deploy the Starfleet workloads
+      type: file
+      source: bootstrap/setup.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: reference-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: probe-affinity-local
+      description: "The shuttle in west is answered only by probe pods of west"
+      type: file
+      source: validation/validate-probe-affinity-local.sh
+      hint: "Annotate the Service probe in west with service.cilium.io/affinity=local."
+    - name: scout-affinity-remote
+      description: "The shuttle in west is answered only by scout pods of east"
+      type: file
+      source: validation/validate-scout-affinity-remote.sh
+      hint: "Annotate the Service scout in west with service.cilium.io/affinity=remote."
+    - name: east-unchanged
+      description: "The shuttle in east is still answered by both clusters for probe and scout"
+      type: file
+      source: validation/validate-east-unchanged.sh
+      hint: "Set the affinity annotation in west only. Leave the Services of east as they are."
+    - name: services-still-global
+      description: "The Services are still global in both clusters"
+      type: file
+      source: validation/validate-services-still-global.sh
+      hint: "Do not remove the global annotation. Affinity only applies to global services."
+
+teardown:
+  keepCluster: false

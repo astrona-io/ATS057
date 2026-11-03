@@ -1,0 +1,80 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Repair And Tune Cross-Cluster Service Discovery (LAB). UNTESTED: written from the documentation, not yet run.
+# Two kind clusters side by side: "west" (this environment) and "east"
+# (runtime.kind.clusters). Cluster Mesh is enabled and the two clusters are connected.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-057-capstone-020
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+    preloadImages:
+      - hashicorp/http-echo:1.0
+      - curlimages/curl:8.22.0
+    networking:
+      disableDefaultCNI: true
+      podSubnet: 10.241.0.0/16
+      serviceSubnet: 10.101.0.0/16
+    clusters:
+      - name: east
+        image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+        preloadImages:
+          - hashicorp/http-echo:1.0
+          - curlimages/curl:8.22.0
+        networking:
+          disableDefaultCNI: true
+          podSubnet: 10.242.0.0/16
+          serviceSubnet: 10.102.0.0/16
+
+bootstrap:
+  init:
+    - name: start-state
+      description: Install Cilium in both clusters and deploy the Starfleet workloads
+      type: file
+      source: bootstrap/setup.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: reference-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: probe-both-clusters
+      description: "probe is answered by both clusters for the shuttles of west and of east"
+      type: file
+      source: validation/validate-probe-both-clusters.sh
+      hint: "The Service probe is missing in starfleet of east. Create it with the same name and namespace and the global annotation."
+    - name: bridge-west-prefers-local
+      description: "The shuttle in west is answered only by bridge pods of west"
+      type: file
+      source: validation/validate-bridge-west-prefers-local.sh
+      hint: "Annotate bridge in west with service.cilium.io/affinity=local."
+    - name: bridge-east-unchanged
+      description: "The shuttle in east is still answered by bridge in both clusters"
+      type: file
+      source: validation/validate-bridge-east-unchanged.sh
+      hint: "Affinity is a per-cluster choice. Leave the Service in east alone."
+    - name: scout-west-private
+      description: "The scout pods of west are not offered to east"
+      type: file
+      source: validation/validate-scout-west-private.sh
+      hint: "Add service.cilium.io/shared=\"false\" to scout in west."
+    - name: scout-west-uses-both
+      description: "The shuttle in west is still answered by scout in both clusters"
+      type: file
+      source: validation/validate-scout-west-uses-both.sh
+      hint: "Shared false only stops west from offering its backends. It still uses the backends of east."
+
+teardown:
+  keepCluster: false

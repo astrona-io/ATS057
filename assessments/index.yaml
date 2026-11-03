@@ -7,7 +7,7 @@ banks:
   question_count: 6
   placement:
     position: after
-    reading: sections/section-020/module-01/course-02-summary.md
+    reading: sections/section-020/module-01/course-03-summary.md
   covered_sections:
   - section-010
   - section-020

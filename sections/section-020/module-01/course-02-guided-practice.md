@@ -3,82 +3,97 @@ draft: true
 exam_objectives:
 - Achieve Service Discovery and Load Balancing Across Clusters with Cluster Mesh
 ---
-# Guided Practice: Inspect A Service Before Global Discovery
+# Control Which Clusters Share Their Backends
 
-Use a host shell with the private kubeconfig for this module playground. A kubeconfig identifies the cluster and credentials used by kubectl, the Kubernetes command-line tool.
+A global service is rarely symmetric in practice. A team may run a service in one cluster only and let other clusters consume it. Another team may run a service in two clusters and need one of them to stay private. The annotations `shared` and the Service itself give these shapes. This part sets up three shapes, tests what each cluster sees and reads the backend list that the agent holds.
+
+## Three shapes of a global service
+
+The playground has the Service `bridge` in `starfleet` of both clusters. Each shape below is a combination of annotations on the two Services:
+
+1. Both clusters set `global: "true"`. Each cluster offers and uses all backends. Clients in both clusters see both clusters.
+2. Both set `global: "true"`, and `west` also sets `shared: "false"`. The clients in `west` see both clusters. The clients in `east` see `east` only.
+3. Only one cluster has the global annotation. The cluster without it keeps local backends only and takes no part in the group.
+
+```mermaid
+flowchart LR
+    W["clients in west"] -->|"uses"| WE["bridge west"]
+    W -->|"uses"| EE["bridge east"]
+    E["clients in east"] -->|"uses"| EE
+```
+
+The diagram shows shape 2: `west` offers nothing, so `east` clients reach `east` only, and `west` clients reach both.
 
 <!-- astrona:playground:renew -->
 
-```sh
-export KUBECONFIG="$(astrona kubeconfig ats-057-playground-020-01)"
-test "$(kubectl config current-context)" = "kind-astro-ats-057-playground-020-01" || exit 1
-node_name="astro-ats-057-playground-020-01-control-plane"
-worker_name="astro-ats-057-playground-020-01-worker"
-```
+## Test shape 1
 
-Keep this connection selected. Host-level commands name only this environment's node containers. They do not operate on the host operating system.
-
-## Inspect And Explain
-
-Cilium manages the private two-node cluster. Hubble Relay and the BGP control plane are enabled. The probe and two clients are healthy; no learner policy or evidence report exists. This baseline uses kube-proxy and tunnelling.
-
-Inspect the current objects before changing them:
+Open a shell in the playground and save the context names:
 
 ```sh
-kubectl -n starfleet get pods -o wide
-kubectl get nodes -o wide
+export WEST="$(kubectl config current-context)"
+export EAST="$ASTRONA_CLUSTER_EAST_CONTEXT"
 ```
 
-Record the local Service name, namespace and endpoints. A global annotation alone does not create remote endpoints. This baseline has no mesh peer; the graded evidence is explicitly local.
-
-Record observations in `starfleet/evidence`, whose `report.json` contains the stated report. The verifier reads the live API again; invented values do not pass.
-
-
-Save this as `record.py`:
-
-```python
-import json,subprocess,time,sys,tempfile,os
-
-def call(*args):
- r=subprocess.run(list(args),text=True,capture_output=True,timeout=20)
- assert r.returncode==0, 'Observation command failed: '+args[0]
- return r.stdout.strip()
-def obj(kind,name,ns='starfleet'):
- return json.loads(call('kubectl',*(['-n',ns] if ns else []),'get',kind,name,'-o','json'))
-def api(path):
- script='import urllib.request; print(urllib.request.urlopen('+repr('http://prometheus:9090'+path)+',timeout=8).read().decode())'
- return json.loads(call('kubectl','-n','starfleet','exec','shuttle','--','python','-c',script))
-def save(data):
- resource={'apiVersion':'v1','kind':'ConfigMap','metadata':{'name':'evidence','namespace':'starfleet'},'data':{'report.json':json.dumps(data,sort_keys=True)}}
- with tempfile.NamedTemporaryFile(mode='w',suffix='.json',delete=False) as f:json.dump(resource,f);path=f.name
- try:call('kubectl','apply','-f',path)
- finally:os.unlink(path)
-
-assert call('kubectl','config','current-context') == 'kind-astro-ats-057-playground-020-01'
-data=obj('configmap','cilium-config','kube-system')['data'];service=obj('service','probe')
-report={'cluster_name':data.get('cluster-name','default'),'cluster_id':data.get('cluster-id','0'),'service_namespace':service['metadata']['namespace'],'service_name':service['metadata']['name'],'pod_ip':obj('pod','shuttle')['status']['podIP']}
-save(report)
-```
-
-Apply the scoped correction:
+Annotate `bridge` as global in both clusters:
 
 ```sh
-python3 record.py
+kubectl --context "$WEST" -n starfleet annotate service bridge service.cilium.io/global=true --overwrite
+kubectl --context "$EAST" -n starfleet annotate service bridge service.cilium.io/global=true --overwrite
 ```
 
-## Verify The Result
-
-Observe the actual result. A denied request returns a nonzero status when the denial works, so run it separately from a shell sequence that stops on error. Status convergence and a successful request establish different parts of the result.
+Count the replies from both clients:
 
 ```sh
-kubectl -n starfleet get configmaps
-kubectl -n starfleet get deployment probe -o yaml
+for context in "$WEST" "$EAST"; do
+  echo "client in $context"
+  for attempt in $(seq 1 30); do kubectl --context "$context" -n starfleet exec shuttle -- curl -s --max-time 3 http://bridge; done | sort | uniq -c
+done
 ```
 
-Record the local baseline that a mesh configuration would depend on. The commands above deliberately target one environment. Keep its remaining components available so an unrelated failure cannot stand in for the required denial or correction. No example command output is presented as evidence of a completed run. A matching field alone does not establish that a process used it or that a controller reconciled it.
+Each client sees `bridge from east` and `bridge from west`.
 
+## Test shape 2
+
+Stop `west` from sharing its backends:
+
+```sh
+kubectl --context "$WEST" -n starfleet annotate service bridge service.cilium.io/shared=false --overwrite
+```
+
+Wait a few seconds and run the same loop again. The `shuttle` of `west` still gets both replies, and the `shuttle` of `east` gets `bridge from east` only. `west` kept using the remote backends and stopped offering its own.
+
+## Read the backend list
+
+Each agent holds the merged list. Ask the agent of `west` for the Service list:
+
+```sh
+kubectl --context "$WEST" -n kube-system exec ds/cilium -- cilium-dbg service list
+```
+
+Find the line of the `bridge` Service IP address. It has the pod addresses of both clusters as backends. Run the same command in `east`: the `bridge` entry lists the `east` pods only.
+
+## Remove the shape
+
+Remove both annotations to return to local backends. A trailing dash removes an annotation:
+
+```sh
+kubectl --context "$WEST" -n starfleet annotate service bridge service.cilium.io/global- service.cilium.io/shared-
+kubectl --context "$EAST" -n starfleet annotate service bridge service.cilium.io/global-
+```
+
+Repeat the loop. Each client sees its own cluster only.
+
+## What you now know
+
+You can build the three shapes of a global service and predict what each cluster sees. The merged backend list in each agent shows the result directly. What is still open is how to prefer local backends when both exist, and how clusters behave when a remote cluster stops answering.
 
 ## Common pitfalls
 
+- Reading only one cluster. A `shared: "false"` setting looks fine from `west` and breaks the view of `east`.
+- Testing right after the annotation. The agents need a few seconds to update the backend list.
+- Using the pod list of the Service as proof. Pod lists show local pods only. Read the agent's service list instead.
+- Removing the global annotation from one cluster and expecting the other to keep a mesh-wide service.
+
 > [!WARNING]
-> Confirm the private context and exact node names before a change. Check the stated scope and live result. Do not change unrelated components to hide the original fault.
+> Removing the global annotation moves clients back to local backends at once. If the local pods cannot carry the load, the service fails for those clients.

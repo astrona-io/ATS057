@@ -1,0 +1,80 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Connect Two Clusters And Restrict Cross-Cluster Traffic (LAB). UNTESTED: written from the documentation, not yet run.
+# Two kind clusters side by side: "west" (this environment) and "east"
+# (runtime.kind.clusters). Cluster Mesh is not enabled: the two clusters do not know each other.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-057-capstone-010
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+    preloadImages:
+      - hashicorp/http-echo:1.0
+      - curlimages/curl:8.22.0
+    networking:
+      disableDefaultCNI: true
+      podSubnet: 10.241.0.0/16
+      serviceSubnet: 10.101.0.0/16
+    clusters:
+      - name: east
+        image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+        preloadImages:
+          - hashicorp/http-echo:1.0
+          - curlimages/curl:8.22.0
+        networking:
+          disableDefaultCNI: true
+          podSubnet: 10.242.0.0/16
+          serviceSubnet: 10.102.0.0/16
+
+bootstrap:
+  init:
+    - name: start-state
+      description: Install Cilium in both clusters and deploy the Starfleet workloads
+      type: file
+      source: bootstrap/setup.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: reference-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: mesh-apiserver-ready
+      description: "clustermesh-apiserver is ready in both clusters"
+      type: file
+      source: validation/validate-mesh-apiserver-ready.sh
+      hint: "Enable Cluster Mesh in both contexts with a NodePort service."
+    - name: remote-cluster-config
+      description: "Each cluster holds the connection details of the other"
+      type: file
+      source: validation/validate-remote-cluster-config.sh
+      hint: "Connect the clusters once with cilium clustermesh connect."
+    - name: west-shuttle-allowed
+      description: "The shuttle in west can reach the probe pod in east"
+      type: file
+      source: validation/validate-west-shuttle-allowed.sh
+      hint: "Mesh first, then the policy in east."
+    - name: west-drifter-denied
+      description: "The drifter in west cannot reach the probe pod in east"
+      type: file
+      source: validation/validate-west-drifter-denied.sh
+      hint: "Select the source by labels, not by a wildcard."
+    - name: east-lookalike-denied
+      description: "The shuttle in east cannot reach the probe pod"
+      type: file
+      source: validation/validate-east-lookalike-denied.sh
+      hint: "Name the source cluster in the policy."
+
+teardown:
+  keepCluster: false

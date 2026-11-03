@@ -1,0 +1,80 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Enable And Connect Cluster Mesh (LAB). UNTESTED: written from the documentation, not yet run.
+# Two kind clusters side by side: "west" (this environment) and "east"
+# (runtime.kind.clusters). Cluster Mesh is not enabled: the two clusters do not know each other.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-057-lab-010-02
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+    preloadImages:
+      - hashicorp/http-echo:1.0
+      - curlimages/curl:8.22.0
+    networking:
+      disableDefaultCNI: true
+      podSubnet: 10.241.0.0/16
+      serviceSubnet: 10.101.0.0/16
+    clusters:
+      - name: east
+        image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+        preloadImages:
+          - hashicorp/http-echo:1.0
+          - curlimages/curl:8.22.0
+        networking:
+          disableDefaultCNI: true
+          podSubnet: 10.242.0.0/16
+          serviceSubnet: 10.102.0.0/16
+
+bootstrap:
+  init:
+    - name: start-state
+      description: Install Cilium in both clusters and deploy the Starfleet workloads
+      type: file
+      source: bootstrap/setup.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: reference-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: mesh-apiserver-ready
+      description: "clustermesh-apiserver is ready in both clusters"
+      type: file
+      source: validation/validate-mesh-apiserver-ready.sh
+      hint: "Run cilium clustermesh enable in both contexts, then cilium clustermesh status --wait."
+    - name: mesh-apiserver-nodeport
+      description: "The clustermesh-apiserver Service is a NodePort in both clusters"
+      type: file
+      source: validation/validate-mesh-apiserver-nodeport.sh
+      hint: "kind has no load balancer. Use --service-type NodePort when you enable Cluster Mesh."
+    - name: remote-cluster-config
+      description: "Each cluster holds the connection details of the other"
+      type: file
+      source: validation/validate-remote-cluster-config.sh
+      hint: "Run cilium clustermesh connect once with --destination-context."
+    - name: west-reaches-east-pod
+      description: "A pod in west reaches a pod in east by its pod IP"
+      type: file
+      source: validation/validate-west-reaches-east-pod.sh
+      hint: "Wait for cilium clustermesh status --wait to finish in both clusters."
+    - name: east-reaches-west-pod
+      description: "A pod in east reaches a pod in west by its pod IP"
+      type: file
+      source: validation/validate-east-reaches-west-pod.sh
+      hint: "The connection is two-way after one connect command. Check the status of both clusters."
+
+teardown:
+  keepCluster: false
