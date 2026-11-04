@@ -54,7 +54,7 @@ sections:
       path: sections/section-010/module-01/labs/lab-01
       after_reading: sections/section-010/module-01/course-02-guided-practice.md
       objective: Fix A Cluster Identity Conflict.
-      status: draft
+      status: alpha
       runtime_verification: pending
     practice_readings:
     - sections/section-010/module-01/course-02-guided-practice.md
@@ -86,7 +86,7 @@ sections:
       path: sections/section-010/module-02/labs/lab-01
       after_reading: sections/section-010/module-02/course-02-connect-clusters-and-verify.md
       objective: Enable And Connect Cluster Mesh.
-      status: draft
+      status: alpha
       runtime_verification: pending
     practice_readings:
     - sections/section-010/module-02/course-02-connect-clusters-and-verify.md
@@ -117,7 +117,7 @@ sections:
       path: sections/section-010/module-03/labs/lab-01
       after_reading: sections/section-010/module-03/course-02-writing-cluster-aware-policies.md
       objective: Restrict Cross-Cluster Traffic With A Cilium Network Policy.
-      status: draft
+      status: alpha
       runtime_verification: pending
     practice_readings:
     - sections/section-010/module-03/course-02-writing-cluster-aware-policies.md
@@ -149,7 +149,7 @@ sections:
       path: sections/section-010/module-04/labs/lab-01
       after_reading: sections/section-010/module-04/course-04-disconnect-and-disable-a-mesh.md
       objective: Disconnect A Cluster From The Mesh.
-      status: draft
+      status: alpha
       runtime_verification: pending
     practice_readings:
     - sections/section-010/module-04/course-04-disconnect-and-disable-a-mesh.md
@@ -186,7 +186,7 @@ sections:
       path: sections/section-020/module-01/labs/lab-01
       after_reading: sections/section-020/module-01/course-02-guided-practice.md
       objective: Create A Global Service Across Two Clusters.
-      status: draft
+      status: alpha
       runtime_verification: pending
     practice_readings:
     - sections/section-020/module-01/course-02-guided-practice.md
@@ -217,7 +217,7 @@ sections:
       path: sections/section-020/module-02/labs/lab-01
       after_reading: sections/section-020/module-02/course-02-unreachable-clusters-and-limits.md
       objective: Prefer Local Or Remote Backends With Service Affinity.
-      status: draft
+      status: alpha
       runtime_verification: pending
     practice_readings:
     - sections/section-020/module-02/course-02-unreachable-clusters-and-limits.md
@@ -248,7 +248,7 @@ sections:
       path: sections/section-020/module-03/labs/lab-01
       after_reading: sections/section-020/module-03/course-02-conflicts-and-endpointslice-synchronization.md
       objective: Export A Service With The Multi-Cluster Services API.
-      status: draft
+      status: alpha
       runtime_verification: pending
     practice_readings:
     - sections/section-020/module-03/course-02-conflicts-and-endpointslice-synchronization.md
@@ -280,7 +280,7 @@ sections:
       path: sections/section-020/module-04/labs/lab-01
       after_reading: sections/section-020/module-04/course-01-a-checklist-for-a-service-that-does-not-balance.md
       objective: Fix Timeouts For A Global Service.
-      status: draft
+      status: alpha
       runtime_verification: pending
     practice_readings:
     - sections/section-020/module-04/course-01-a-checklist-for-a-service-that-does-not-balance.md
