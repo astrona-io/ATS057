@@ -55,7 +55,7 @@ modules:
     difficulty: intermediate
     estimated_duration: 30m
     topic: cilium-clustermesh
-    task_kind: fix
+    task_kind: troubleshooting
     tags: [cluster-mesh, cluster-id, cluster-name, cilium-upgrade]
     learning_goals:
       - "Read the cluster name and ID of a running Cilium cluster"
@@ -166,7 +166,7 @@ modules:
     difficulty: intermediate
     estimated_duration: 30m
     topic: cilium-clustermesh
-    task_kind: fix
+    task_kind: build
     tags: [cluster-mesh, disconnect, operations]
     learning_goals:
       - "Disconnect a cluster with cilium clustermesh disconnect"
@@ -327,7 +327,7 @@ modules:
     difficulty: intermediate
     estimated_duration: 30m
     topic: cilium-clustermesh
-    task_kind: fix
+    task_kind: troubleshooting
     tags: [cluster-mesh, global-service, network-policy, troubleshooting]
     learning_goals:
       - "Find a network policy that drops traffic from a remote cluster"
